@@ -1,5 +1,9 @@
+using System.Diagnostics;
+using System.Globalization;
+
 namespace Alteridem.Engine
 {
+   [DebuggerDisplay( "{Character}" )]
    public struct Piece
    {
       private readonly byte _store;
@@ -15,7 +19,7 @@ namespace Alteridem.Engine
       /// <param name="piece"></param>
       public Piece( char piece )
       {
-         if ( !"PNBRQKpnbrqk".Contains( piece.ToString() ) )
+         if ( !"PNBRQKpnbrqk".Contains( piece.ToString( CultureInfo.InvariantCulture ) ) )
          {
             _store = 0x00;
             return;

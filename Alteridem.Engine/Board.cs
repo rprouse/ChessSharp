@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace Alteridem.Engine
@@ -22,6 +24,7 @@ namespace Alteridem.Engine
       Chess960
    }
 
+   [DebuggerDisplay( "{FEN}" )]
    public class Board
    {
       // An 8*8 Board 
@@ -42,8 +45,8 @@ namespace Alteridem.Engine
 
       private readonly Piece[] _board = new Piece[64];
 
-      // The index into the board if a pawn just made a two square move. It is the square behind the pawn. 0xFF otherwise.
-      private byte _enPassantTarget = 0xFF;
+      // The index into the board if a pawn just made a two square move. It is the square behind the pawn. -1 otherwise.
+      private int _enPassantTarget = -1;
 
       // Castling Availability
       private bool _whiteKingside = true;
@@ -83,6 +86,97 @@ namespace Alteridem.Engine
          }
       }
 
+      /// <summary>
+      /// Construct from Forsyth–Edwards Notation (FEN), 
+      /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+      /// </summary>
+      /// <param name="fen"></param>
+      public Board( string fen )
+      {
+         var parts = fen.Split( new[] { ' ' }, 6 );
+         if ( parts.Length != 6 )
+         {
+            throw new ArgumentException( "fen is in an incorrect format. It does not have 6 parts." );
+         }
+
+         var ranks = parts[0].Split( new[] { '/' } );
+         if ( ranks.Length != 8 )
+         {
+            throw new ArgumentException( "fen is in an incorrect format. The first part does not have 8 ranks." );
+         }
+
+         // Setup the board
+         InitializeBlankBoard();
+         int i = 0;
+         // FEN starts with rank 8 and ends with rank 1
+         for ( int r = 7; r >= 0; r-- )
+         {
+            foreach ( char p in ranks[r] )
+            {
+               if ( char.IsDigit( p ) )
+               {
+                  // Blank squares to skip
+                  int skip = p - '0';
+                  if ( skip > 8 )
+                  {
+                     throw new ArgumentException( "fen is in an incorrect format." );
+                  }
+                  i += skip;
+               }
+               else
+               {
+                  if ( i > 63 )
+                  {
+                     throw new ArgumentException( "fen is in an incorrect format." );
+                  }
+                  _board[i++] = new Piece( p );
+               }
+            }
+         }
+
+         // Active Colour
+         _activeColour = parts[1].ToLowerInvariant() == "w" ? PieceColour.White : PieceColour.Black;
+
+         // Castling availability
+         _whiteKingside = false;
+         _whiteQueenside = false;
+         _blackKingside = false;
+         _blackQueenside = false;
+         foreach ( char c in parts[2] )
+         {
+            switch ( c )
+            {
+               case 'K':
+                  _whiteKingside = true;
+                  break;
+               case 'Q':
+                  _whiteQueenside = true;
+                  break;
+               case 'k':
+                  _blackKingside = true;
+                  break;
+               case 'q':
+                  _blackQueenside = true;
+                  break;
+            }
+         }
+
+         // En passant target square
+         _enPassantTarget = IndexFromSquare( parts[3] );
+
+         // Halfmove clock
+         if ( !Int32.TryParse( parts[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out _halfMoveClock ) )
+         {
+            throw new ArgumentException( "fen is in an incorrect format. Halfmove clock is not an int." );
+         }
+
+         // Fullmove number
+         if ( !Int32.TryParse( parts[5], NumberStyles.Integer, CultureInfo.InvariantCulture, out _fullMoveNumber ) )
+         {
+            throw new ArgumentException( "fen is in an incorrect format. Fullmove number is not an int." );
+         }
+      }
+
       private void InitializeBlankBoard()
       {
          for ( int i = 0; i < 64; i++ )
@@ -98,7 +192,7 @@ namespace Alteridem.Engine
 
          // Setup white
          const string WHITE = "RNBQKBNRPPPPPPPP";
-         for (int i = 0; i < 16; i++)
+         for ( int i = 0; i < 16; i++ )
          {
             _board[i] = new Piece( WHITE[i] );
          }
@@ -107,7 +201,7 @@ namespace Alteridem.Engine
          const string BLACK = "pppppppprnbqkbnr";
          for ( int i = 0; i < 16; i++ )
          {
-            _board[i+48] = new Piece( BLACK[i] );
+            _board[i + 48] = new Piece( BLACK[i] );
          }
       }
 
@@ -117,11 +211,79 @@ namespace Alteridem.Engine
          throw new System.NotImplementedException();
       }
 
-      // TODO: Add a FEN Constructor, http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-
       #endregion
 
       #region Helper Methods
+
+      /// <summary>
+      /// Gets the Forsyth–Edwards Notation (FEN) for this board, 
+      /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+      /// </summary>
+      public string FEN
+      {
+         get
+         {
+            // Board setup
+            var board  = new StringBuilder( 80 );
+            for ( int rank = 7; rank >= 0; rank-- )
+            {
+               int skip = 0;
+               for ( int file = 0; file < 8; file++ )
+               {
+                  int i = Index( rank, file );
+                  char piece = _board[i].Character;
+                  if ( piece != ' ' )
+                  {
+                     if ( skip > 0 )
+                     {
+                        board.Append( skip );
+                        skip = 0;
+                     }
+                     board.Append( piece );
+                  }
+                  else
+                  {
+                     skip++;
+                  }
+               }
+               if ( skip > 0 )
+               {
+                  board.Append( skip );
+               }
+               if ( rank > 0 )
+               {
+                  board.Append( '/' );
+               }
+            }
+
+            // Active Colour
+            char activeColour = _activeColour == PieceColour.White ? 'w' : 'b';
+
+            // Castling availability
+            var castling = new StringBuilder( 4 );
+            if ( !_whiteKingside && !_blackKingside & !_whiteQueenside && !_blackQueenside )
+            {
+               castling.Append( '-' );
+            }
+            if ( _whiteKingside )
+               castling.Append( 'K' );
+            if ( _whiteQueenside )
+               castling.Append( 'Q' );
+            if ( _blackKingside )
+               castling.Append( 'k' );
+            if ( _blackQueenside )
+               castling.Append( 'q' );
+
+            // En passant target square
+            string target = SquareFromIndex( _enPassantTarget );
+
+            // Halfmove clock
+
+            // Fullmove number
+
+            return string.Format( "{0} {1} {2} {3} {4} {5}", board, activeColour, castling, target, _halfMoveClock, _fullMoveNumber );
+         }
+      }
 
       /// <summary>
       /// A simple text representation of the board
@@ -129,20 +291,7 @@ namespace Alteridem.Engine
       /// <returns></returns>
       public override string ToString()
       {
-         var builder  = new StringBuilder(80);
-         for (int rank = 7; rank >= 0; rank--)
-         {
-            for (int file = 0; file < 8; file++)
-            {
-               int i = rank*8 + file;
-               char piece = _board[i].Character;
-               if ( piece == ' ' )
-                  piece = '-';
-               builder.Append( piece );
-            }
-            builder.Append( Environment.NewLine );
-         }
-         return builder.ToString();
+         return FEN;
       }
 
       /// <summary>
@@ -154,7 +303,7 @@ namespace Alteridem.Engine
       {
          if ( string.IsNullOrWhiteSpace( square ) )
          {
-            throw new ArgumentNullException( "square" );
+            return -1;
          }
          if ( square.Length != 2 ||
               !char.IsLetter( square[0] ) ||
@@ -162,13 +311,27 @@ namespace Alteridem.Engine
               char.ToLowerInvariant( square[0] ) > 'h'
             )
          {
-            throw new ArgumentException( "square must be in the form a5" );
+            return -1;
          }
          // Zero based
          int file = char.ToLowerInvariant( square[0] ) - 'a';
          int rank = square[1] - '1';
 
-         return rank*8 + file;
+         return Index( rank, file );
+      }
+
+      /// <summary>
+      /// Gets an index into the board from a rank and file
+      /// </summary>
+      /// <param name="rank">0 to 7</param>
+      /// <param name="file">0 to 7</param>
+      /// <returns></returns>
+      public static int Index( int rank, int file )
+      {
+         if ( rank < 0 || rank > 7 || file < 0 || file > 7 )
+            return -1;
+
+         return rank * 8 + file;
       }
 
       /// <summary>
@@ -180,11 +343,11 @@ namespace Alteridem.Engine
       {
          if ( index < 0 || index > 63 )
          {
-            throw new ArgumentException( "index must be between 0 and 63" );
+            return "-";
          }
-         StringBuilder builder = new StringBuilder( 2 );
-         char file = (char)(index % 8);
-         char rank = (char)(index / 8);
+         var builder = new StringBuilder( 2 );
+         var file = (char)(index % 8);
+         var rank = (char)(index / 8);
          builder.Append( (char)('a' + file) );
          builder.Append( (char)('1' + rank) );
          return builder.ToString();
