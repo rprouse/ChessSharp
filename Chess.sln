@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alteridem.Engine", "Alteridem.Engine\Alteridem.Engine.csproj", "{5859D796-746A-4867-A924-48F698B62463}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alteridem.Engine.Test", "Alteridem.Engine.Test\Alteridem.Engine.Test.csproj", "{BE3D40EC-F0A0-4D70-BB09-A9402D657BA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5859D796-746A-4867-A924-48F698B62463}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5859D796-746A-4867-A924-48F698B62463}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5859D796-746A-4867-A924-48F698B62463}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5859D796-746A-4867-A924-48F698B62463}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE3D40EC-F0A0-4D70-BB09-A9402D657BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE3D40EC-F0A0-4D70-BB09-A9402D657BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE3D40EC-F0A0-4D70-BB09-A9402D657BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE3D40EC-F0A0-4D70-BB09-A9402D657BA2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
