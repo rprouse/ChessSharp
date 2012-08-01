@@ -301,20 +301,20 @@ namespace Alteridem.Engine
       /// <returns></returns>
       public static int IndexFromSquare( string square )
       {
-         if ( string.IsNullOrWhiteSpace( square ) )
+         if ( string.IsNullOrWhiteSpace( square ) || square.Length != 2 )
          {
             return -1;
          }
-         if ( square.Length != 2 ||
-              !char.IsLetter( square[0] ) ||
-              square[1] < '1' || square[1] > '8' ||
-              char.ToLowerInvariant( square[0] ) > 'h'
-            )
+         square = square.ToLowerInvariant();
+
+         if ( square[0] < 'a' || square[0] > 'h' ||
+              square[1] < '1' || square[1] > '8' )
          {
             return -1;
          }
+
          // Zero based
-         int file = char.ToLowerInvariant( square[0] ) - 'a';
+         int file = square[0] - 'a';
          int rank = square[1] - '1';
 
          return Index( rank, file );
@@ -345,12 +345,9 @@ namespace Alteridem.Engine
          {
             return "-";
          }
-         var builder = new StringBuilder( 2 );
-         var file = (char)(index % 8);
-         var rank = (char)(index / 8);
-         builder.Append( (char)('a' + file) );
-         builder.Append( (char)('1' + rank) );
-         return builder.ToString();
+         var file = (char)('a' + index % 8);
+         var rank = (char)('1' + index / 8);
+         return string.Format( "{0}{1}", file, rank );
       }
 
       #endregion
