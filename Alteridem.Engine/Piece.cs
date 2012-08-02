@@ -62,7 +62,7 @@ namespace Alteridem.Engine
       /// </summary>
       public PieceType Type
       {
-         get { return (PieceType)(_store & 0x07); }
+         get { return (PieceType)(_store & 0x0F); }
       }
 
       /// <summary>
@@ -70,7 +70,7 @@ namespace Alteridem.Engine
       /// </summary>
       public PieceColour Colour
       {
-         get { return (PieceColour)(_store & 0x08); }
+         get { return (PieceColour)(_store & 0x10); }
       }
 
       /// <summary>

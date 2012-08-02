@@ -8,10 +8,10 @@ namespace Alteridem.Engine
       None = 0x00,
       WhitePawn = 0x01,
       BlackPawn = 0x02,
-      Knight = 0x03,
-      Bishop = 0x04,
-      Rook = 0x05,
-      Queen = 0x06,
-      King = 0x07
+      Knight = 0x04,
+      Bishop = 0x05,
+      Rook = 0x06,
+      Queen = 0x07,
+      King = 0x08
    }
 }

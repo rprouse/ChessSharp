@@ -351,5 +351,88 @@ namespace Alteridem.Engine
       }
 
       #endregion
+
+      public Move MakeMove( int from, int to )
+      {
+         // Are the squares valid?
+         if ( from < 0 || from > 63 || to < 0 || to > 63 )
+            return new Move( from, to, MoveFlags.Invalid );
+
+         if ( _board[from].Type == PieceType.None )
+            return new Move( from, to, MoveFlags.Invalid );
+
+         // Is it that players turn?
+         if ( _board[from].Colour != _activeColour )
+            return new Move( from, to, MoveFlags.Invalid );
+
+         Move move;
+         switch ( _board[from].Type )
+         {
+            case PieceType.BlackPawn:
+               move = BlackPawnMove( from, to );
+               break;
+            case PieceType.WhitePawn:
+               move = WhitePawnMove( from, to );
+               break;
+            case PieceType.Knight:
+               move = KnightMove( from, to );
+               break;
+            case PieceType.Bishop:
+               move = BishopMove( from, to );
+               break;
+            case PieceType.Queen:
+               move = QueenMove( from, to );
+               break;
+            case PieceType.King:
+               move = KingMove( from, to );
+               break;
+            default:
+               // There isn't a piece on the from square
+               return new Move( from, to, MoveFlags.Invalid );
+         }
+
+         // If move is valid, update the game info
+         if ( move.Valid )
+         {
+            // Update player, clock, etc
+         }
+         return move;
+      }
+
+      private Move BlackPawnMove( int from, int to )
+      {
+         // TODO: Implement move
+         return new Move( from, to );
+      }
+
+      private Move WhitePawnMove( int from, int to )
+      {
+         // TODO: Implement move
+         return new Move( from, to );
+      }
+
+      private Move KnightMove( int from, int to )
+      {
+         // TODO: Implement move
+         return new Move( from, to );
+      }
+
+      private Move BishopMove( int from, int to )
+      {
+         // TODO: Implement move
+         return new Move( from, to );
+      }
+
+      private Move QueenMove( int from, int to )
+      {
+         // TODO: Implement move
+         return new Move( from, to );
+      }
+
+      private Move KingMove( int from, int to )
+      {
+         // TODO: Implement move
+         return new Move( from, to );
+      }
    }
 }

@@ -6,6 +6,6 @@ namespace Alteridem.Engine
    public enum PieceColour : byte
    {
       White = 0x00,
-      Black = 0x08
+      Black = 0x10
    }
 }
