@@ -67,5 +67,60 @@ namespace Alteridem.Engine.Test
          string newFen = board.FEN;
          Assert.AreEqual( fen, newFen );
       }
+
+      // General Errors
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, 36, 28, "Wrong colour moving" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, 25, 33, "No piece to move" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, -1, 33, "from low" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, 64, 33, "from high" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, 33, -1, "to low" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, 33, 64, "to high" )]
+      // Capture our own piece
+      // Capture the king
+
+      // White Pawn Moves
+      [TestCase( "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1", true, 12, 20, "White pawn, one square" )]
+      [TestCase( "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", true, 12, 28, "White pawn, two squares" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, 20, 36, "White pawn, two squares, not first row" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", false, 28, 36, "White pawn, one square, blocked" )]
+      [TestCase( "rnbqkbnr/pppp2pp/8/4p3/4Pp2/3P2P1/PPP2P1P/RNBQKBNR w KQkq - 0 4", "rnbqkbnr/pppp2pp/8/4p3/4Pp2/3P2P1/PPP2P1P/RNBQKBNR w KQkq - 0 4", false, 13, 29, "White pawn, two square, blocked 1" )]
+      [TestCase( "rnbqkbnr/pppp2pp/8/4p3/4P3/3P1pPP/PPP2P2/RNBQKBNR w KQkq - 0 5", "rnbqkbnr/pppp2pp/8/4p3/4P3/3P1pPP/PPP2P2/RNBQKBNR w KQkq - 0 5", false, 13, 29, "White pawn, two square, blocked 2" )]
+      // Test capture left
+      // Test capture right
+      // Test en-passant capture
+      // Test en-passant capture no longer valid
+
+      // Black Pawn Moves
+      [TestCase( "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", true, 52, 44, "Black pawn, one square" )]
+      [TestCase( "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2", true, 52, 36, "Black pawn, two squares" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/4p3/8/8/4PP2/PPPP2PP/RNBQKBNR b KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/8/4PP2/PPPP2PP/RNBQKBNR b KQkq - 0 2", false, 44, 28, "Black pawn, two squares, not first row" )]
+      [TestCase( "rnbqkbnr/pppp1ppp/8/4p3/4P3/3P4/PPP2PPP/RNBQKBNR b KQkq - 0 2", "rnbqkbnr/pppp1ppp/8/4p3/4P3/3P4/PPP2PPP/RNBQKBNR b KQkq - 0 2", false, 36, 28, "Black pawn, one square, blocked" )]
+      public void TestMove( string startFen, string endFen, bool valid, int from, int to, string description )
+      {
+         var board = new Board( startFen );
+         var move = board.MakeMove( from, to );
+         Assert.AreEqual( valid, move.Valid, description );
+         Assert.AreEqual( endFen, board.FEN, description );
+      }
+
+      public void TestBlackPawnSingleRow()
+      {
+      }
+
+      public void TestBlackPawnDoubleRow()
+      {
+      }
+
+      public void TestBlackPawnSingleRowBlocked()
+      {
+      }
+
+      public void TestBlackPawnDoubleRowBlockedOne()
+      {
+      }
+
+      public void TestBlackPawnDoubleRowBlockedTwo()
+      {
+      }
    }
 }

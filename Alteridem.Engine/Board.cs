@@ -365,6 +365,11 @@ namespace Alteridem.Engine
          if ( _board[from].Colour != _activeColour )
             return new Move( from, to, MoveFlags.Invalid );
 
+         // Are we capturing our own piece?
+         if ( _board[to].Type != PieceType.None ||
+              _board[to].Colour == _activeColour )
+            return new Move( from, to, MoveFlags.Invalid );
+
          Move move;
          switch ( _board[from].Type )
          {
@@ -401,8 +406,46 @@ namespace Alteridem.Engine
 
       private Move BlackPawnMove( int from, int to )
       {
-         // TODO: Implement move
-         return new Move( from, to );
+         int diff = from - to;
+
+         // Single row move
+         if ( diff == 8 )
+         {
+            // Check for block
+            if ( _board[to].Type != PieceType.None )
+               return new Move( from, to, MoveFlags.Invalid );
+
+            return new Move( from, to );
+         }
+
+         // First double row move
+         if ( diff == 16 )
+         {
+            if ( from < 48 || from > 55 ||
+                 _board[to].Type != PieceType.None ||
+                 _board[from - 8].Type != PieceType.None )
+               return new Move( from, to, MoveFlags.Invalid );
+
+            _enPassantTarget = from - 8;
+            return new Move( from, to, MoveFlags.DoublePawnPush );
+         }
+
+         // Capture
+         if ( diff == 9 || diff == 7 )
+         {
+            // En Passant Capture
+            if ( to == _enPassantTarget )
+            {
+               return new Move( from, to, MoveFlags.EnPassantCapture );
+            }
+
+            // Regular capture
+            if ( _board[to].Type != PieceType.None )
+            {
+               return new Move( from, to, MoveFlags.Capture );
+            }
+         }
+         return new Move( from, to, MoveFlags.Invalid );
       }
 
       private Move WhitePawnMove( int from, int to )
