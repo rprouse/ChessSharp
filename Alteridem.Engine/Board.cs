@@ -352,7 +352,12 @@ namespace Alteridem.Engine
 
         #endregion
 
-        public Move MakeMove(int from, int to)
+        public Move MakeMove( string from, string to )
+        {
+            return MakeMove(IndexFromSquare(from), IndexFromSquare(to));
+        }
+
+        private Move MakeMove(int from, int to)
         {
             // Are the squares valid?
             if (from < 0 || from > 63 || to < 0 || to > 63)
