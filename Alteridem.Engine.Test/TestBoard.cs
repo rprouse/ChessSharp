@@ -95,12 +95,12 @@ namespace Alteridem.Engine.Test
         [TestCase("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2", true, "e7", "e5", "Black pawn, two squares")]
         [TestCase("rnbqkbnr/pppp1ppp/4p3/8/8/4PP2/PPPP2PP/RNBQKBNR b KQkq - 0 2", "rnbqkbnr/pppp1ppp/4p3/8/8/4PP2/PPPP2PP/RNBQKBNR b KQkq - 0 2", false, "e6", "e4", "Black pawn, two squares, not first row")]
         [TestCase("rnbqkbnr/pppp1ppp/8/4p3/4P3/3P4/PPP2PPP/RNBQKBNR b KQkq - 0 2", "rnbqkbnr/pppp1ppp/8/4p3/4P3/3P4/PPP2PPP/RNBQKBNR b KQkq - 0 2", false, "e5", "e4", "Black pawn, one square, blocked")]
-        // 2 square blocked 1
-        // 2 square blocked 2
-        // Test capture left
-        // Test capture right
-        // Test en-passant capture
-        // Test en-passant capture no longer valid
+        [TestCase("rnbqkbnr/ppp1pppp/4P3/3p4/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3", "rnbqkbnr/ppp1pppp/4P3/3p4/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3", false, "e7", "e5", "Black pawn, two square, blocked 1")]
+        [TestCase("rnbqkbnr/ppp1pppp/3p4/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2", "rnbqkbnr/ppp1pppp/3p4/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2", false, "e7", "e5", "Black pawn, two square, blocked 2")]
+        [TestCase("rnbqkbnr/ppp1p1pp/3p1p2/4P3/8/3P4/PPP2PPP/RNBQKBNR b KQkq - 0 3", "rnbqkbnr/ppp1p1pp/5p2/4p3/8/3P4/PPP2PPP/RNBQKBNR w KQkq - 0 4", true, "d6", "e5", "Black pawn, capture left")]
+        [TestCase("rnbqkbnr/ppp1p1pp/3p1p2/4P3/8/3P4/PPP2PPP/RNBQKBNR b KQkq - 0 3", "rnbqkbnr/ppp1p1pp/3p4/4p3/8/3P4/PPP2PPP/RNBQKBNR w KQkq - 0 4", true, "f6", "e5", "Black pawn, capture right")]
+        [TestCase("rnbqkbnr/pppp1ppp/8/8/P2Pp3/8/1PP1PPPP/RNBQKBNR b KQkq d3 0 3", "rnbqkbnr/pppp1ppp/8/8/P7/3p4/1PP1PPPP/RNBQKBNR w KQkq - 0 4", true, "e4", "d3", "Black pawn, en-passant capture")]
+        [TestCase("rnbqkbnr/pppp2pp/8/5p2/P2Pp3/1P6/2P1PPPP/RNBQKBNR b KQkq - 0 4", "rnbqkbnr/pppp2pp/8/5p2/P2Pp3/1P6/2P1PPPP/RNBQKBNR b KQkq - 0 4", false, "e4", "d3", "Black pawn, en-passant capture no longer valid")]
 
         public void TestMove(string startFen, string endFen, bool valid, string from, string to, string description)
         {
