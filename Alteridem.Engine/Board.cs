@@ -531,6 +531,13 @@ namespace Alteridem.Engine
             // If move is valid, update the game info
             if (move.Valid)
             {
+                // Remove piece from En-Passant capture
+                if (move.EnPassantCapture)
+                {
+                    int diff = _activeColour == PieceColour.White ? -8 : 8;
+                    _board[move.To + diff] = new Piece();
+                }
+
                 _enPassantTarget = move.EnPassantTarget;
 
                 // Update player, clock, etc
@@ -571,11 +578,6 @@ namespace Alteridem.Engine
             {
                 if (move == candidate)
                 {
-                    // Handle En-Passant
-                    if (candidate.EnPassantCapture)
-                    {
-                        _board[move.To+8] = new Piece();
-                    }
                     return candidate;
                 }
             }
@@ -590,11 +592,6 @@ namespace Alteridem.Engine
             {
                 if (move == candidate)
                 {
-                    // Handle En-Passant
-                    if (candidate.EnPassantCapture)
-                    {
-                        _board[move.To-8] = new Piece();
-                    }
                     return candidate;
                 }
             }
