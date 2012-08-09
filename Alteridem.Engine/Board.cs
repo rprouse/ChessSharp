@@ -336,6 +336,26 @@ namespace Alteridem.Engine
         }
 
         /// <summary>
+        /// Gets a file (0-7) for an index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static int File(int index)
+        {
+            return index%8;
+        }
+
+        /// <summary>
+        /// Gets a rank (0-7) for an index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static int Rank(int index)
+        {
+            return index/8;
+        }
+
+        /// <summary>
         /// Given an index into the board, returns a square designation
         /// </summary>
         /// <param name="index"></param>
@@ -346,8 +366,8 @@ namespace Alteridem.Engine
             {
                 return "-";
             }
-            var file = (char)('a' + index % 8);
-            var rank = (char)('1' + index / 8);
+            var file = (char)('a' + File(index));
+            var rank = (char)('1' + Rank(index));
             return string.Format("{0}{1}", file, rank);
         }
 

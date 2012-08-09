@@ -54,6 +54,22 @@ namespace Alteridem.Engine.Test
             Assert.AreEqual(expectedIndex, Board.Index(rank, file));
         }
 
+        [TestCase(3, 28)]
+        [TestCase(7, 63)]
+        [TestCase(0, 0)]
+        public void TestRank(int rank, int index)
+        {
+            Assert.AreEqual(rank, Board.Rank(index));    
+        }
+
+        [TestCase(3, 25)]
+        [TestCase(7, 63)]
+        [TestCase(0, 0)]
+        public void TestFile(int file, int index)
+        {
+            Assert.AreEqual(file, Board.Rank(index));
+        }
+
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")]
         [TestCase("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")]
         [TestCase("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2")]
