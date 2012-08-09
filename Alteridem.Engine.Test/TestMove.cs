@@ -46,6 +46,7 @@ namespace Alteridem.Engine.Test
 
         [TestCase(false, MoveFlags.QuietMove)]
         [TestCase(true, MoveFlags.DoublePawnPush)]
+        [TestCase(false, MoveFlags.EnPassantCapture)]
         public void TestDoublePawnPush(bool push, MoveFlags flags)
         {
             var move = new Move(0, 0, flags);
@@ -83,6 +84,32 @@ namespace Alteridem.Engine.Test
         {
             var move = new Move(0, 0, flags);
             Assert.AreEqual(quiet, move.QuietMove);
+        }
+
+        [TestCase( 8, 24, MoveFlags.DoublePawnPush, 16)]
+        [TestCase(15, 31, MoveFlags.DoublePawnPush, 23)]
+        [TestCase(48, 32, MoveFlags.DoublePawnPush, 40)]
+        [TestCase(55, 39, MoveFlags.DoublePawnPush, 47)]
+        [TestCase(11, 19, MoveFlags.QuietMove, -1)]
+        public void TestEnPassantTarget( int from, int to, MoveFlags flags, int enPassantTarget )
+        {
+            var move = new Move(from, to, flags);
+            Assert.AreEqual(enPassantTarget, move.EnPassantTarget);
+        }
+
+        [TestCase(2, 11, MoveFlags.QuietMove, 2, 11, MoveFlags.QuietMove, true)]
+        [TestCase(18, 26, MoveFlags.QuietMove, 18, 26, MoveFlags.Capture, true)]
+        [TestCase(2, 11, MoveFlags.QuietMove, 18, 26, MoveFlags.QuietMove, false)]
+        public void TestEquality( int a1, int b1, MoveFlags f1, int a2, int b2, MoveFlags f2, bool areEqual )
+        {
+            var left = new Move(a1, b1, f1);
+            var right = new Move(a2, b2, f2);
+            Assert.AreEqual(areEqual, left == right);
+            Assert.AreNotEqual(areEqual, left != right);
+            Assert.AreEqual(areEqual, left.Equals(right));
+            Assert.AreEqual(areEqual, right == left);
+            Assert.AreNotEqual(areEqual, right != left);
+            Assert.AreEqual(areEqual, right.Equals(left));
         }
     }
 }

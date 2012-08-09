@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -181,7 +182,7 @@ namespace Alteridem.Engine
         {
             for (int i = 0; i < 64; i++)
             {
-                _board[i] = new Piece(0x0);
+                _board[i] = new Piece();
             }
         }
 
@@ -352,7 +353,133 @@ namespace Alteridem.Engine
 
         #endregion
 
-        public Move MakeMove( string from, string to )
+        #region Get valid moves for a piece
+
+        public List<Move> MovesFor(string from)
+        {
+            int i = IndexFromSquare(from);
+            if (i > -1 &&
+                _board[i].Type != PieceType.None &&
+                _board[i].Colour == _activeColour)
+            {
+                switch (_board[i].Type)
+                {
+                    case PieceType.BlackPawn:
+                        return BlackPawnMoves(i);
+                    case PieceType.WhitePawn:
+                        return WhitePawnMoves(i);
+                    case PieceType.Knight:
+                        return KnightMoves(i);
+                    case PieceType.Bishop:
+                        return BishopMoves(i);
+                    case PieceType.Queen:
+                        return QueenMoves(i);
+                    case PieceType.King:
+                        return KingMoves(i);
+                }
+            }
+            return new List<Move>();
+        }
+
+        private List<Move> BlackPawnMoves(int from)
+        {
+            var moves = new List<Move>();
+
+            // One square
+            if ( from > 7 && _board[from-8].Type == PieceType.None )
+                moves.Add(new Move(from, from-8));
+
+            // Two square push
+            if (from >= 48 && from <= 55 &&
+                _board[from - 8].Type == PieceType.None &&
+                _board[from - 16].Type == PieceType.None)
+            {
+                moves.Add(new Move(from, from-16, MoveFlags.DoublePawnPush));
+            }
+
+            var captures = new[] {from - 7, from - 9};
+
+            foreach (int capture in captures)
+            {
+                // En-Passant Capture
+                if (_enPassantTarget == capture)
+                {
+                    moves.Add(new Move(from, capture, MoveFlags.EnPassantCapture));
+                }
+                else if (_board[capture].Type != PieceType.None && _board[capture].Colour != _activeColour)
+                {
+                    moves.Add(new Move(from, capture, MoveFlags.Capture));
+                }
+            }
+            return moves;
+        }
+
+        private List<Move> WhitePawnMoves(int from)
+        {
+            var moves = new List<Move>();
+
+            // One square
+            if (from < 55 && _board[from + 8].Type == PieceType.None)
+                moves.Add(new Move(from, from + 8));
+
+            // Two square push
+            if (from >= 8 && from <= 15 &&
+                _board[from + 8].Type == PieceType.None &&
+                _board[from + 16].Type == PieceType.None)
+            {
+                moves.Add(new Move(from, from + 16, MoveFlags.DoublePawnPush));
+            }
+
+            var captures = new[] { from + 7, from + 9 };
+
+            foreach (int capture in captures)
+            {
+                // En-Passant Capture
+                if (_enPassantTarget == capture)
+                {
+                    moves.Add(new Move(from, capture, MoveFlags.EnPassantCapture));
+                }
+                else if (_board[capture].Type != PieceType.None && _board[capture].Colour != _activeColour)
+                {
+                    moves.Add(new Move(from, capture, MoveFlags.Capture));
+                }
+            }
+            return moves;
+        }
+
+        private List<Move> KnightMoves(int from)
+        {
+            var moves = new List<Move>();
+
+            return moves;
+        }
+
+        private List<Move> BishopMoves(int from)
+        {
+            var moves = new List<Move>();
+
+            return moves;
+        }
+
+        private List<Move> QueenMoves(int from)
+        {
+            var moves = new List<Move>();
+
+            return moves;
+        }
+
+        private List<Move> KingMoves(int from)
+        {
+            var moves = new List<Move>();
+
+            return moves;
+        }
+
+        #endregion
+
+        #region Make a move
+
+        public Move MakeMove(string from, string to)
         {
             return MakeMove(IndexFromSquare(from), IndexFromSquare(to));
         }
@@ -372,14 +499,10 @@ namespace Alteridem.Engine
 
             // Are we capturing our own piece?
             if (_board[to].Type != PieceType.None &&
-                 _board[to].Colour == _activeColour)
+                _board[to].Colour == _activeColour)
                 return new Move(from, to, MoveFlags.Invalid);
 
             Move move;
-            if (_board[from].Type != PieceType.BlackPawn && _board[from].Type != PieceType.WhitePawn)
-            {
-                _enPassantTarget = -1;
-            }
             switch (_board[from].Type)
             {
                 case PieceType.BlackPawn:
@@ -408,6 +531,8 @@ namespace Alteridem.Engine
             // If move is valid, update the game info
             if (move.Valid)
             {
+                _enPassantTarget = move.EnPassantTarget;
+
                 // Update player, clock, etc
                 if (_activeColour == PieceColour.Black)
                 {
@@ -429,7 +554,7 @@ namespace Alteridem.Engine
                 //}
                 // Update the board
                 _board[move.To] = _board[move.From];
-                _board[move.From] = new Piece(0x0);
+                _board[move.From] = new Piece();
 
                 // TODO: Handle castling
 
@@ -440,100 +565,40 @@ namespace Alteridem.Engine
 
         private Move BlackPawnMove(int from, int to)
         {
-            int diff = from - to;
-
-            // Single row move
-            if (diff == 8)
+            var move = new Move(from, to, MoveFlags.Invalid);
+            var moves = BlackPawnMoves(from);
+            foreach (Move candidate in moves)
             {
-                // Check for block
-                if (_board[to].Type != PieceType.None)
-                    return new Move(from, to, MoveFlags.Invalid);
-
-                _enPassantTarget = -1;
-                return new Move(from, to);
-            }
-
-            // First double row move
-            if (diff == 16)
-            {
-                if (from < 48 || from > 55 ||
-                     _board[to].Type != PieceType.None ||
-                     _board[from - 8].Type != PieceType.None)
-                    return new Move(from, to, MoveFlags.Invalid);
-
-                _enPassantTarget = from - 8;
-                return new Move(from, to, MoveFlags.DoublePawnPush);
-            }
-
-            // Capture
-            if (diff == 9 || diff == 7)
-            {
-                // En Passant Capture
-                if (to == _enPassantTarget)
+                if (move == candidate)
                 {
-                    // Remove captured piece, normally, this is done in the calling function, but this is a bit special
-                    _board[_enPassantTarget + 8] = new Piece(0x0);
-                    _enPassantTarget = -1;
-                    return new Move(from, to, MoveFlags.EnPassantCapture);
-                }
-
-                // Regular capture
-                if (_board[to].Type != PieceType.None)
-                {
-                    _enPassantTarget = -1;
-                    return new Move(from, to, MoveFlags.Capture);
+                    // Handle En-Passant
+                    if (candidate.EnPassantCapture)
+                    {
+                        _board[move.To+8] = new Piece();
+                    }
+                    return candidate;
                 }
             }
-            return new Move(from, to, MoveFlags.Invalid);
+            return move;
         }
 
         private Move WhitePawnMove(int from, int to)
         {
-            int diff = to - from;
-
-            // Single row move
-            if (diff == 8)
+            var move = new Move(from, to, MoveFlags.Invalid);
+            var moves = WhitePawnMoves(from);
+            foreach (Move candidate in moves)
             {
-                // Check for block
-                if (_board[to].Type != PieceType.None)
-                    return new Move(from, to, MoveFlags.Invalid);
-
-                _enPassantTarget = -1;
-                return new Move(from, to);
-            }
-
-            // First double row move
-            if (diff == 16)
-            {
-                if (from < 08 || from > 15 ||
-                     _board[to].Type != PieceType.None ||
-                     _board[from + 8].Type != PieceType.None)
-                    return new Move(from, to, MoveFlags.Invalid);
-
-                _enPassantTarget = from + 8;
-                return new Move(from, to, MoveFlags.DoublePawnPush);
-            }
-
-            // Capture
-            if (diff == 9 || diff == 7)
-            {
-                // En Passant Capture
-                if (to == _enPassantTarget)
+                if (move == candidate)
                 {
-                    // Remove captured piece, normally, this is done in the calling function, but this is a bit special
-                    _board[_enPassantTarget-8] = new Piece(0x0);
-                    _enPassantTarget = -1;
-                    return new Move(from, to, MoveFlags.EnPassantCapture);
-                }
-
-                // Regular capture
-                if (_board[to].Type != PieceType.None)
-                {
-                    _enPassantTarget = -1;
-                    return new Move(from, to, MoveFlags.Capture);
+                    // Handle En-Passant
+                    if (candidate.EnPassantCapture)
+                    {
+                        _board[move.To-8] = new Piece();
+                    }
+                    return candidate;
                 }
             }
-            return new Move(from, to, MoveFlags.Invalid);
+            return move;
         }
 
         private Move KnightMove(int from, int to)
@@ -559,5 +624,8 @@ namespace Alteridem.Engine
             // TODO: Implement move
             return new Move(from, to);
         }
+
+        #endregion
+
     }
 }

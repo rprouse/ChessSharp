@@ -109,25 +109,5 @@ namespace Alteridem.Engine.Test
             Assert.AreEqual(valid, move.Valid, description);
             Assert.AreEqual(endFen, board.FEN, description);
         }
-
-        public void TestBlackPawnSingleRow()
-        {
-        }
-
-        public void TestBlackPawnDoubleRow()
-        {
-        }
-
-        public void TestBlackPawnSingleRowBlocked()
-        {
-        }
-
-        public void TestBlackPawnDoubleRowBlockedOne()
-        {
-        }
-
-        public void TestBlackPawnDoubleRowBlockedTwo()
-        {
-        }
     }
 }
