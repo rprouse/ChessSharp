@@ -353,11 +353,16 @@ namespace Alteridem.Engine
 
         #endregion
 
-        #region Get valid moves for a piece
+        #region Get Valid Moves for a Piece
 
         public List<Move> MovesFor(string from)
         {
             int i = IndexFromSquare(from);
+            return MovesFor(i);
+        }
+
+        private List<Move> MovesFor(int i)
+        {
             if (i > -1 &&
                 _board[i].Type != PieceType.None &&
                 _board[i].Colour == _activeColour)
@@ -486,7 +491,7 @@ namespace Alteridem.Engine
 
         #endregion
 
-        #region Make a move
+        #region Make a Move
 
         public Move MakeMove(string from, string to)
         {
@@ -495,50 +500,7 @@ namespace Alteridem.Engine
 
         private Move MakeMove(int from, int to)
         {
-            // Are the squares valid?
-            if (from < 0 || from > 63 || to < 0 || to > 63)
-                return new Move(from, to, MoveFlags.Invalid);
-
-            if (_board[from].Type == PieceType.None)
-                return new Move(from, to, MoveFlags.Invalid);
-
-            // Is it that players turn?
-            if (_board[from].Colour != _activeColour)
-                return new Move(from, to, MoveFlags.Invalid);
-
-            // Are we capturing our own piece?
-            if (_board[to].Type != PieceType.None &&
-                _board[to].Colour == _activeColour)
-                return new Move(from, to, MoveFlags.Invalid);
-
-            Move move;
-            switch (_board[from].Type)
-            {
-                case PieceType.BlackPawn:
-                    move = BlackPawnMove(from, to);
-                    break;
-                case PieceType.WhitePawn:
-                    move = WhitePawnMove(from, to);
-                    break;
-                case PieceType.Knight:
-                    move = KnightMove(from, to);
-                    break;
-                case PieceType.Bishop:
-                    move = BishopMove(from, to);
-                    break;
-                case PieceType.Rook:
-                    move = RookMove(from, to);
-                    break;
-                case PieceType.Queen:
-                    move = QueenMove(from, to);
-                    break;
-                case PieceType.King:
-                    move = KingMove(from, to);
-                    break;
-                default:
-                    // There isn't a piece on the from square
-                    return new Move(from, to, MoveFlags.Invalid);
-            }
+            Move move = GetMove(from, to);
 
             // If move is valid, update the game info
             if (move.Valid)
@@ -582,12 +544,17 @@ namespace Alteridem.Engine
             return move;
         }
 
-        private delegate List<Move> GetMovesDelegate(int from);
-
-        private Move PieceMove(int from, int to, GetMovesDelegate method)
+        /// <summary>
+        /// Given the current board and a move to make, constructs a Move object
+        /// with the validity set correctly.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        private Move GetMove(int from, int to)
         {
             var move = new Move(from, to, MoveFlags.Invalid);
-            var moves = method(from);
+            var moves = MovesFor(from);
             foreach (Move candidate in moves)
             {
                 if (move == candidate)
@@ -596,41 +563,6 @@ namespace Alteridem.Engine
                 }
             }
             return move;
-        }
-
-        private Move BlackPawnMove(int from, int to)
-        {
-            return PieceMove(from, to, BlackPawnMoves);
-        }
-
-        private Move WhitePawnMove(int from, int to)
-        {
-            return PieceMove(from, to, WhitePawnMoves);
-        }
-
-        private Move KnightMove(int from, int to)
-        {
-            return PieceMove(from, to, KnightMoves);
-        }
-
-        private Move BishopMove(int from, int to)
-        {
-            return PieceMove(from, to, BishopMoves);
-        }
-
-        private Move RookMove(int from, int to)
-        {
-            return PieceMove(from, to, RookMoves);
-        }
-
-        private Move QueenMove(int from, int to)
-        {
-            return PieceMove(from, to, QueenMoves);
-        }
-
-        private Move KingMove(int from, int to)
-        {
-            return PieceMove(from, to, KingMoves);
         }
 
         #endregion
