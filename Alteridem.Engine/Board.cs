@@ -372,6 +372,8 @@ namespace Alteridem.Engine
                         return KnightMoves(i);
                     case PieceType.Bishop:
                         return BishopMoves(i);
+                    case PieceType.Rook:
+                        return RookMoves(i);
                     case PieceType.Queen:
                         return QueenMoves(i);
                     case PieceType.King:
@@ -386,18 +388,18 @@ namespace Alteridem.Engine
             var moves = new List<Move>();
 
             // One square
-            if ( from > 7 && _board[from-8].Type == PieceType.None )
-                moves.Add(new Move(from, from-8));
+            if (from > 7 && _board[from - 8].Type == PieceType.None)
+                moves.Add(new Move(from, from - 8));
 
             // Two square push
             if (from >= 48 && from <= 55 &&
                 _board[from - 8].Type == PieceType.None &&
                 _board[from - 16].Type == PieceType.None)
             {
-                moves.Add(new Move(from, from-16, MoveFlags.DoublePawnPush));
+                moves.Add(new Move(from, from - 16, MoveFlags.DoublePawnPush));
             }
 
-            var captures = new[] {from - 7, from - 9};
+            var captures = new[] { from - 7, from - 9 };
 
             foreach (int capture in captures)
             {
@@ -461,6 +463,13 @@ namespace Alteridem.Engine
             return moves;
         }
 
+        private List<Move> RookMoves(int from)
+        {
+            var moves = new List<Move>();
+
+            return moves;
+        }
+
         private List<Move> QueenMoves(int from)
         {
             var moves = new List<Move>();
@@ -517,6 +526,9 @@ namespace Alteridem.Engine
                 case PieceType.Bishop:
                     move = BishopMove(from, to);
                     break;
+                case PieceType.Rook:
+                    move = RookMove(from, to);
+                    break;
                 case PieceType.Queen:
                     move = QueenMove(from, to);
                     break;
@@ -570,10 +582,12 @@ namespace Alteridem.Engine
             return move;
         }
 
-        private Move BlackPawnMove(int from, int to)
+        private delegate List<Move> GetMovesDelegate(int from);
+
+        private Move PieceMove(int from, int to, GetMovesDelegate method)
         {
             var move = new Move(from, to, MoveFlags.Invalid);
-            var moves = BlackPawnMoves(from);
+            var moves = method(from);
             foreach (Move candidate in moves)
             {
                 if (move == candidate)
@@ -582,44 +596,41 @@ namespace Alteridem.Engine
                 }
             }
             return move;
+        }
+
+        private Move BlackPawnMove(int from, int to)
+        {
+            return PieceMove(from, to, BlackPawnMoves);
         }
 
         private Move WhitePawnMove(int from, int to)
         {
-            var move = new Move(from, to, MoveFlags.Invalid);
-            var moves = WhitePawnMoves(from);
-            foreach (Move candidate in moves)
-            {
-                if (move == candidate)
-                {
-                    return candidate;
-                }
-            }
-            return move;
+            return PieceMove(from, to, WhitePawnMoves);
         }
 
         private Move KnightMove(int from, int to)
         {
-            // TODO: Implement move
-            return new Move(from, to);
+            return PieceMove(from, to, KnightMoves);
         }
 
         private Move BishopMove(int from, int to)
         {
-            // TODO: Implement move
-            return new Move(from, to);
+            return PieceMove(from, to, BishopMoves);
+        }
+
+        private Move RookMove(int from, int to)
+        {
+            return PieceMove(from, to, RookMoves);
         }
 
         private Move QueenMove(int from, int to)
         {
-            // TODO: Implement move
-            return new Move(from, to);
+            return PieceMove(from, to, QueenMoves);
         }
 
         private Move KingMove(int from, int to)
         {
-            // TODO: Implement move
-            return new Move(from, to);
+            return PieceMove(from, to, KingMoves);
         }
 
         #endregion
