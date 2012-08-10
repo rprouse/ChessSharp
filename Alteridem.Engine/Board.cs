@@ -405,7 +405,90 @@ namespace Alteridem.Engine
                         return KingMoves(i);
                 }
             }
+            // TODO: Prune out moves that put us in check
             return new List<Move>();
+        }
+
+        private bool IsBlocker(int index)
+        {
+            return _board[index].Type != PieceType.None && _board[index].Colour == _activeColour;
+        }
+
+        private bool IsCapture(int index)
+        {
+            return _board[index].Type != PieceType.None && _board[index].Colour != _activeColour;
+        }
+
+        /// <summary>
+        /// Checks if a move is blocked, is a capture, or just a regular move. Returns true if blocked or a capture.
+        /// </summary>
+        /// <param name="to">The square we are moving to</param>
+        /// <param name="moves">The move list to add to</param>
+        /// <returns>Returns true if this move will stop further moves of long range pieces.</returns>
+        private bool CheckMove( int to, List<Move> moves )
+        {
+            if (IsBlocker(to))
+                return true;
+
+            if (IsCapture(to))
+            {
+                moves.Add(new Move(to, to, MoveFlags.Capture));
+                return true;
+            }
+            moves.Add(new Move(to, to));
+            return false;
+        }
+
+        /// <summary>
+        /// Generates valid moves for long range pieces
+        /// </summary>
+        /// <param name="from">The starting square</param>
+        /// <param name="diff">The direction to travel</param>
+        /// <param name="moves">The move list to add to</param>
+        /// <param name="kingMove">If true, will only go one square on the given vector</param>
+        private void LongRangeMoves( int from, int diff, List<Move> moves, bool kingMove = false  )
+        {
+            int i = @from;
+            while (true)
+            {
+                if (Rank(i) == 7 || File(i) == 7)
+                    break;
+
+                i += diff;
+                if (i > 63)
+                    break;
+
+                if (CheckMove(i, moves))
+                    break;
+
+                if ( kingMove )
+                    break;
+            }
+
+            i = @from;
+            while (true)
+            {
+                if (Rank(i) == 0 || File(i) == 0)
+                    break;
+
+                i -= diff;
+
+                if (i < 0)
+                    break;
+
+                if (IsBlocker(i))
+                    break;
+
+                if (IsCapture(i))
+                {
+                    moves.Add(new Move(@from, i, MoveFlags.Capture));
+                    break;
+                }
+                moves.Add(new Move(@from, i));
+
+                if (kingMove)
+                    break;
+            }
         }
 
         private List<Move> BlackPawnMoves(int from)
@@ -433,7 +516,7 @@ namespace Alteridem.Engine
                 {
                     moves.Add(new Move(from, capture, MoveFlags.EnPassantCapture));
                 }
-                else if (_board[capture].Type != PieceType.None && _board[capture].Colour != _activeColour)
+                else if (IsCapture(capture))
                 {
                     moves.Add(new Move(from, capture, MoveFlags.Capture));
                 }
@@ -466,7 +549,7 @@ namespace Alteridem.Engine
                 {
                     moves.Add(new Move(from, capture, MoveFlags.EnPassantCapture));
                 }
-                else if (_board[capture].Type != PieceType.None && _board[capture].Colour != _activeColour)
+                else if (IsCapture(capture))
                 {
                     moves.Add(new Move(from, capture, MoveFlags.Capture));
                 }
@@ -477,13 +560,33 @@ namespace Alteridem.Engine
         private List<Move> KnightMoves(int from)
         {
             var moves = new List<Move>();
+            int r = Rank(from);
+            int f = File(from);
+
+            if (r > 0 && f < 6) KnightMove(from,  -6, moves);
+            if (r > 0 && f > 1) KnightMove(from, -10, moves);
+            if (r > 1 && f < 7) KnightMove(from, -15, moves);
+            if (r > 1 && f > 0) KnightMove(from, -17, moves);
+
+            if (r < 7 && f > 1) KnightMove(from,  +6, moves);
+            if (r < 7 && f < 6) KnightMove(from, +10, moves);
+            if (r < 6 && f > 0) KnightMove(from, +15, moves);
+            if (r < 6 && f < 7) KnightMove(from, +17, moves);
 
             return moves;
+        }
+
+        private void KnightMove( int from, int diff, List<Move> moves )
+        {
+            CheckMove(from + diff, moves);
         }
 
         private List<Move> BishopMoves(int from)
         {
             var moves = new List<Move>();
+
+            LongRangeMoves( from, 9, moves );
+            LongRangeMoves( from, 7, moves );
 
             return moves;
         }
@@ -492,6 +595,9 @@ namespace Alteridem.Engine
         {
             var moves = new List<Move>();
 
+            LongRangeMoves(from, 8, moves);
+            LongRangeMoves(from, 1, moves);
+
             return moves;
         }
 
@@ -499,12 +605,22 @@ namespace Alteridem.Engine
         {
             var moves = new List<Move>();
 
+            LongRangeMoves(from, 9, moves);
+            LongRangeMoves(from, 7, moves);
+            LongRangeMoves(from, 8, moves);
+            LongRangeMoves(from, 1, moves);
+
             return moves;
         }
 
         private List<Move> KingMoves(int from)
         {
             var moves = new List<Move>();
+
+            LongRangeMoves(from, 9, moves, true);
+            LongRangeMoves(from, 7, moves, true);
+            LongRangeMoves(from, 8, moves, true);
+            LongRangeMoves(from, 1, moves, true);
 
             return moves;
         }
@@ -577,7 +693,7 @@ namespace Alteridem.Engine
             var moves = MovesFor(from);
             foreach (Move candidate in moves)
             {
-                if (move == candidate)
+                if (move == candidate && candidate.Valid)
                 {
                     return candidate;
                 }
