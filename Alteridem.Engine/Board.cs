@@ -419,23 +419,28 @@ namespace Alteridem.Engine
             return _board[index].Type != PieceType.None && _board[index].Colour != _activeColour;
         }
 
+        private bool IsKingCapture(int index)
+        {
+            return IsCapture(index) && _board[index].Type == PieceType.King;
+        }
+
         /// <summary>
         /// Checks if a move is blocked, is a capture, or just a regular move. Returns true if blocked or a capture.
         /// </summary>
         /// <param name="to">The square we are moving to</param>
         /// <param name="moves">The move list to add to</param>
         /// <returns>Returns true if this move will stop further moves of long range pieces.</returns>
-        private bool CheckMove( int to, List<Move> moves )
+        private bool CheckMove( int from, int to, List<Move> moves )
         {
-            if (IsBlocker(to))
+            if (IsBlocker(to) || IsKingCapture(to))
                 return true;
-
+            
             if (IsCapture(to))
             {
-                moves.Add(new Move(to, to, MoveFlags.Capture));
+                moves.Add(new Move(from, to, MoveFlags.Capture));
                 return true;
             }
-            moves.Add(new Move(to, to));
+            moves.Add(new Move(from, to));
             return false;
         }
 
@@ -448,7 +453,7 @@ namespace Alteridem.Engine
         /// <param name="kingMove">If true, will only go one square on the given vector</param>
         private void LongRangeMoves( int from, int diff, List<Move> moves, bool kingMove = false  )
         {
-            int i = @from;
+            int i = from;
             while (true)
             {
                 if (Rank(i) == 7 || File(i) == 7)
@@ -458,14 +463,14 @@ namespace Alteridem.Engine
                 if (i > 63)
                     break;
 
-                if (CheckMove(i, moves))
+                if (CheckMove(from, i, moves))
                     break;
 
                 if ( kingMove )
                     break;
             }
 
-            i = @from;
+            i = from;
             while (true)
             {
                 if (Rank(i) == 0 || File(i) == 0)
@@ -476,15 +481,8 @@ namespace Alteridem.Engine
                 if (i < 0)
                     break;
 
-                if (IsBlocker(i))
+                if (CheckMove(from, i, moves))
                     break;
-
-                if (IsCapture(i))
-                {
-                    moves.Add(new Move(@from, i, MoveFlags.Capture));
-                    break;
-                }
-                moves.Add(new Move(@from, i));
 
                 if (kingMove)
                     break;
@@ -578,7 +576,7 @@ namespace Alteridem.Engine
 
         private void KnightMove( int from, int diff, List<Move> moves )
         {
-            CheckMove(from + diff, moves);
+            CheckMove(from, from + diff, moves);
         }
 
         private List<Move> BishopMoves(int from)
@@ -650,6 +648,38 @@ namespace Alteridem.Engine
 
                 _enPassantTarget = move.EnPassantTarget;
 
+                // TODO: Disable move if it results in check
+
+                // TODO: Disable castling if it passes through check
+
+                // TODO: Handle pawn promotion
+
+                // Disable castling flags
+                if ( _board[move.From].Type == PieceType.King )
+                {
+                    if (_activeColour == PieceColour.White)
+                    {
+                        _whiteKingside = false;
+                        _whiteQueenside = false;
+                    }
+                    else
+                    {
+                        _blackKingside = false;
+                        _blackQueenside = false;
+                    }
+                }
+                else if (_board[move.From].Type == PieceType.Rook)
+                {
+                    if (_activeColour == PieceColour.White && move.From == 0)
+                        _whiteQueenside = false;
+                    else if (_activeColour == PieceColour.White && move.From == 7)
+                        _whiteKingside = false;
+                    else if (_activeColour == PieceColour.Black && move.From == 56)
+                        _blackQueenside = false;
+                    else if (_activeColour == PieceColour.Black && move.From == 63)
+                        _blackKingside = false;
+                }
+
                 // Update player, clock, etc
                 if (_activeColour == PieceColour.Black)
                 {
@@ -672,8 +702,6 @@ namespace Alteridem.Engine
                 // Update the board
                 _board[move.To] = _board[move.From];
                 _board[move.From] = new Piece();
-
-                // TODO: Handle castling
 
                 // TODO: Add to move list
             }
