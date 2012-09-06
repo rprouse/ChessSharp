@@ -1,4 +1,5 @@
 ﻿using System;
+using Alteridem.Engine.Commands;
 
 namespace Alteridem.Engine
 {
@@ -6,10 +7,11 @@ namespace Alteridem.Engine
    {
       static void Main( string[] args )
       {
-         Board board = new Board( BoardInitialization.Standard );
-         Console.WriteLine( board.ToString() );
-
-         Console.ReadLine();
+          ICommandParser parser = CommandFactory.GetParser();
+          if ( parser != null )
+          {
+              parser.Run();
+          }
       }
    }
 }
