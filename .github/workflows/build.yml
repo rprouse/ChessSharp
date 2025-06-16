@@ -45,6 +45,11 @@ jobs:
     - name: 📊 Generate Code Coverage Report  
       run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:HtmlInline
 
+    - name: ⬆️ Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: **/coverage.cobertura.xml
+
     - name: ⬆️ Publish Coverage Report
       uses: actions/upload-artifact@v4
       if: success() || failure()    # run this step even if previous step failed
