@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Alteridem.Engine.Commands;
+namespace Chess.Engine.Commands;
 
 public class UciCommands : ICommandParser
 {

@@ -1,4 +1,4 @@
-namespace Alteridem.Engine.Test;
+namespace Chess.Engine.Test;
 
 [TestFixture]
 public class TestPiece

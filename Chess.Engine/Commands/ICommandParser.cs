@@ -1,4 +1,4 @@
-namespace Alteridem.Engine.Commands;
+namespace Chess.Engine.Commands;
 
 public interface ICommandParser
 {

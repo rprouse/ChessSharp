@@ -14,6 +14,6 @@
     <PackageReference Include="Shouldly" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Alteridem.Engine\Alteridem.Engine.csproj" />
+    <ProjectReference Include="..\Chess.Engine\Chess.Engine.csproj" />
   </ItemGroup>
 </Project>

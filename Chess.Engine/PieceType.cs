@@ -1,4 +1,4 @@
-namespace Alteridem.Engine;
+namespace Chess.Engine;
 
 /// <summary>
 /// The type of the piece, for example, pawn, knight, etc.

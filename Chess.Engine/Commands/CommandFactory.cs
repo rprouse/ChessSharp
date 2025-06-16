@@ -1,6 +1,6 @@
 using System;
 
-namespace Alteridem.Engine.Commands;
+namespace Chess.Engine.Commands;
 
 public static class CommandFactory
 {

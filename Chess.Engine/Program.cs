@@ -1,4 +1,4 @@
-using Alteridem.Engine.Commands;
+using Chess.Engine.Commands;
 
 ICommandParser parser = CommandFactory.GetParser();
 if (parser != null )

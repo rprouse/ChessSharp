@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
-namespace Alteridem.Engine;
+namespace Chess.Engine;
 
 /// <summary>
 /// How should we initialize the board

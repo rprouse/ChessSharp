@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 
-namespace Alteridem.Engine;
+namespace Chess.Engine;
 
 [DebuggerDisplay("{Character}")]
 public sealed class Piece

@@ -1,6 +1,6 @@
 using System;
 
-namespace Alteridem.Engine;
+namespace Chess.Engine;
 
 // http://chessprogramming.wikispaces.com/Encoding+Moves
 [Flags]

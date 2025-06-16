@@ -1,4 +1,4 @@
-namespace Alteridem.Engine;
+namespace Chess.Engine;
 
 /// <summary>
 /// The colour of the piece, black or white
