@@ -1,0 +1,55 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+      with:
+        submodules: true   # Fetch and checkout submodules
+        fetch-depth: 0     # Ensure the full history is fetched, useful when dealing with submodules
+    
+    - name: 🔧 Setup .NET 8.0 SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'    # Install .NET 8.0 SDK
+
+    - name: 📝 Install Report Generator Tool
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool  
+
+    - name: 📦 Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: 💉 Install dependencies
+      run: dotnet restore
+
+    - name: 🛠️ Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: ✅ Test
+      run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage"
+
+    - name: 📊 Generate Code Coverage Report  
+      run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReport -reporttypes:HtmlInline
+
+    - name: ⬆️ Publish Coverage Report
+      uses: actions/upload-artifact@v4
+      if: success() || failure()    # run this step even if previous step failed
+      with:
+        name: coverage-report
+        path: CoverageReport/*
+        retention-days: 30
+
