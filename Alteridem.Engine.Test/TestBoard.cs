@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace Alteridem.Engine.Test
 {
@@ -18,7 +18,7 @@ namespace Alteridem.Engine.Test
         [TestCase("h8", 63)]
         public void TestIndexFromSquare(string square, int index)
         {
-            Assert.AreEqual(index, Board.IndexFromSquare(square));
+            Assert.That(index, Is.EqualTo(Board.IndexFromSquare(square)));
         }
 
         [TestCase("-", -1)]
@@ -34,7 +34,7 @@ namespace Alteridem.Engine.Test
         [TestCase("h8", 63)]
         public void TestSquareFromIndex(string square, int index)
         {
-            Assert.AreEqual(square, Board.SquareFromIndex(index));
+            Assert.That(square, Is.EqualTo(Board.SquareFromIndex(index)));
         }
 
 
@@ -51,7 +51,7 @@ namespace Alteridem.Engine.Test
         [TestCase(7, 7, 63)]
         public void TestIndex(int file, int rank, int expectedIndex)
         {
-            Assert.AreEqual(expectedIndex, Board.Index(rank, file));
+            Assert.That(expectedIndex, Is.EqualTo(Board.Index(rank, file)));
         }
 
         [TestCase(3, 28)]
@@ -59,7 +59,7 @@ namespace Alteridem.Engine.Test
         [TestCase(0, 0)]
         public void TestRank(int rank, int index)
         {
-            Assert.AreEqual(rank, Board.Rank(index));    
+            Assert.That(rank, Is.EqualTo(Board.Rank(index)));    
         }
 
         [TestCase(3, 25)]
@@ -67,7 +67,7 @@ namespace Alteridem.Engine.Test
         [TestCase(0, 0)]
         public void TestFile(int file, int index)
         {
-            Assert.AreEqual(file, Board.Rank(index));
+            Assert.That(file, Is.EqualTo(Board.Rank(index)));
         }
 
         [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")]
@@ -81,7 +81,7 @@ namespace Alteridem.Engine.Test
         {
             var board = new Board(fen);
             string newFen = board.FEN;
-            Assert.AreEqual(fen, newFen);
+            Assert.That(fen, Is.EqualTo(newFen));
         }
 
         // General Errors
@@ -160,8 +160,8 @@ namespace Alteridem.Engine.Test
         {
             var board = new Board(startFen);
             var move = board.MakeMove(from, to);
-            Assert.AreEqual(valid, move.Valid, description);
-            Assert.AreEqual(endFen, board.FEN, description);
+            Assert.That(valid, Is.EqualTo(move.Valid), message: description);
+            Assert.That(endFen, Is.EqualTo(board.FEN), message: description);
         }
     }
 }

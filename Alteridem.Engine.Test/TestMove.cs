@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace Alteridem.Engine.Test
 {
@@ -18,8 +18,8 @@ namespace Alteridem.Engine.Test
         public void TestGetPromotion(PieceType piece, MoveFlags flags)
         {
             var move = new Move(0, 0, flags);
-            Assert.AreEqual(piece, move.Promotion);
-            Assert.AreEqual(true, move.Valid);
+            Assert.That(piece, Is.EqualTo(move.Promotion));
+            Assert.That(true, Is.EqualTo(move.Valid));
         }
 
         [TestCase(false, MoveFlags.QuietMove)]
@@ -40,8 +40,8 @@ namespace Alteridem.Engine.Test
         public void TestCaptures(bool captures, MoveFlags flags)
         {
             var move = new Move(0, 0, flags);
-            Assert.AreEqual(captures, move.Captures);
-            Assert.AreEqual(true, move.Valid);
+            Assert.That(captures, Is.EqualTo(move.Captures));
+            Assert.That(true, Is.EqualTo(move.Valid));
         }
 
         [TestCase(false, MoveFlags.QuietMove)]
@@ -50,8 +50,8 @@ namespace Alteridem.Engine.Test
         public void TestDoublePawnPush(bool push, MoveFlags flags)
         {
             var move = new Move(0, 0, flags);
-            Assert.AreEqual(push, move.DoublePawnPush);
-            Assert.AreEqual(true, move.Valid);
+            Assert.That(push, Is.EqualTo(move.DoublePawnPush));
+            Assert.That(true, Is.EqualTo(move.Valid));
         }
 
         [TestCase(false, MoveFlags.QuietMove)]
@@ -60,8 +60,8 @@ namespace Alteridem.Engine.Test
         public void TestCastle(bool castle, MoveFlags flags)
         {
             var move = new Move(0, 0, flags);
-            Assert.AreEqual(castle, move.Castle);
-            Assert.AreEqual(true, move.Valid);
+            Assert.That(castle, Is.EqualTo(move.Castle));
+            Assert.That(true, Is.EqualTo(move.Valid));
         }
 
         [TestCase(true, MoveFlags.QuietMove)]
@@ -72,7 +72,7 @@ namespace Alteridem.Engine.Test
         public void TestInvalidMove(bool valid, MoveFlags flags)
         {
             var move = new Move(0, 0, flags);
-            Assert.AreEqual(valid, move.Valid);
+            Assert.That(valid, Is.EqualTo(move.Valid));
         }
 
         [TestCase(true, MoveFlags.QuietMove)]
@@ -83,7 +83,7 @@ namespace Alteridem.Engine.Test
         public void TestQuietMove(bool quiet, MoveFlags flags)
         {
             var move = new Move(0, 0, flags);
-            Assert.AreEqual(quiet, move.QuietMove);
+            Assert.That(quiet, Is.EqualTo(move.QuietMove));
         }
 
         [TestCase( 8, 24, MoveFlags.DoublePawnPush, 16)]
@@ -94,7 +94,7 @@ namespace Alteridem.Engine.Test
         public void TestEnPassantTarget( int from, int to, MoveFlags flags, int enPassantTarget )
         {
             var move = new Move(from, to, flags);
-            Assert.AreEqual(enPassantTarget, move.EnPassantTarget);
+            Assert.That(enPassantTarget, Is.EqualTo(move.EnPassantTarget));
         }
 
         [TestCase(2, 11, MoveFlags.QuietMove, 2, 11, MoveFlags.QuietMove, true)]
@@ -104,12 +104,12 @@ namespace Alteridem.Engine.Test
         {
             var left = new Move(a1, b1, f1);
             var right = new Move(a2, b2, f2);
-            Assert.AreEqual(areEqual, left == right);
-            Assert.AreNotEqual(areEqual, left != right);
-            Assert.AreEqual(areEqual, left.Equals(right));
-            Assert.AreEqual(areEqual, right == left);
-            Assert.AreNotEqual(areEqual, right != left);
-            Assert.AreEqual(areEqual, right.Equals(left));
+            Assert.That(areEqual, Is.EqualTo(left == right));
+            Assert.That(areEqual, Is.Not.EqualTo(left != right));
+            Assert.That(areEqual, Is.EqualTo(left.Equals(right)));
+            Assert.That(areEqual, Is.EqualTo(right == left));
+            Assert.That(areEqual, Is.Not.EqualTo(right != left));
+            Assert.That(areEqual, Is.EqualTo(right.Equals(left)));
         }
     }
 }
