@@ -22,7 +22,11 @@ public class UciCommands : ICommandParser
             string command = Console.ReadLine();
             if (command != null)
             {
-                if (ParseCommand(command.Trim().ToLowerInvariant())) ;
+                if (!ParseCommand(command.Trim().ToLowerInvariant()))
+                {
+                    // If the command was not recognized, we assume it is invalid
+                    Console.WriteLine("Unknown command: {0}", command);
+                }
             }
         }
     }
