@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 
-namespace Alteridem.Engine.Commands
+namespace Alteridem.Engine.Commands;
+
+public static class CommandFactory
 {
-    public static class CommandFactory
+    public static ICommandParser GetParser()
     {
-        public static ICommandParser GetParser()
+        while (true)
         {
-            while (true)
+            string command = Console.ReadLine();
+            if (command != null)
             {
-                string command = Console.ReadLine();
-                if (command != null)
+                command = command.Trim().ToLowerInvariant();
+
+                switch (command)
                 {
-                    command = command.Trim().ToLowerInvariant();
+                    case "uci":
+                        return new UciCommands();
+                    case "quit":
+                        return null;
 
-                    switch (command)
-                    {
-                        case "uci":
-                            return new UciCommands();
-                        case "quit":
-                            return null;
-
-                    }
                 }
             }
         }
