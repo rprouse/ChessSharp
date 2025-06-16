@@ -42,7 +42,6 @@ public class Board
     // 1 | 00 01 02 03 04 05 06 07 | 1
     //    -------------------------
     //      a  b  c  d  e  f  g  h
-    #region Private Members
 
     private readonly Piece[] _board = new Piece[64];
 
@@ -63,10 +62,6 @@ public class Board
 
     // The number of the full move. It starts at 1, and is incremented after Black's move.
     private int _fullMoveNumber = 0;
-
-    #endregion
-
-    #region Construction
 
     /// <summary>
     /// Constructs a board based on the given setup
@@ -211,10 +206,6 @@ public class Board
         // TODO: Setup a Chess960 board
         throw new System.NotImplementedException();
     }
-
-    #endregion
-
-    #region Helper Methods
 
     /// <summary>
     /// Gets the Forsyth–Edwards Notation (FEN) for this board, 
@@ -370,10 +361,6 @@ public class Board
         var rank = (char)('1' + Rank(index));
         return string.Format("{0}{1}", file, rank);
     }
-
-    #endregion
-
-    #region Get Valid Moves for a Piece
 
     public List<Move> MovesFor(string from)
     {
@@ -623,10 +610,6 @@ public class Board
         return moves;
     }
 
-    #endregion
-
-    #region Make a Move
-
     public Move MakeMove(string from, string to)
     {
         return MakeMove(IndexFromSquare(from), IndexFromSquare(to));
@@ -728,7 +711,4 @@ public class Board
         }
         return move;
     }
-
-    #endregion
-
 }

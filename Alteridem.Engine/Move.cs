@@ -23,13 +23,7 @@ public enum MoveFlags : byte
 
 public class Move : IEquatable<Move>
 {
-    #region Private Members
-
     private readonly MoveFlags _flags;
-
-    #endregion
-
-    #region Constructor
 
     /// <summary>
     /// Construct a move
@@ -43,10 +37,6 @@ public class Move : IEquatable<Move>
         To = to;
         _flags = flags;
     }
-
-    #endregion
-
-    #region Public Properties
 
     /// <summary>
     /// The index of the from square
@@ -143,10 +133,6 @@ public class Move : IEquatable<Move>
         get { return (_flags & MoveFlags.Invalid) != MoveFlags.Invalid; }
     }
 
-    #endregion
-
-    #region Equality members
-
     /// <summary>
     /// Indicates whether the current object is equal to another object of the same type.
     /// </summary>
@@ -200,6 +186,4 @@ public class Move : IEquatable<Move>
     {
         return !Equals(left, right);
     }
-
-    #endregion
 }
