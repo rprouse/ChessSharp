@@ -43,6 +43,9 @@ public class Board
     //    -------------------------
     //      a  b  c  d  e  f  g  h
 
+    const string WHITE = "RNBQKBNRPPPPPPPP";
+    const string BLACK = "pppppppprnbqkbnr";
+
     private readonly Piece[] _board = new Piece[64];
 
     // The index into the board if a pawn just made a two square move. It is the square behind the pawn. -1 otherwise.
@@ -89,13 +92,13 @@ public class Board
     /// <param name="fen"></param>
     public Board(string fen)
     {
-        var parts = fen.Split(new[] { ' ' }, 6);
+        var parts = fen.Split([' '], 6);
         if (parts.Length != 6)
         {
             throw new ArgumentException("fen is in an incorrect format. It does not have 6 parts.");
         }
 
-        var ranks = parts[0].Split(new[] { '/' });
+        var ranks = parts[0].Split(['/']);
         if (ranks.Length != 8)
         {
             throw new ArgumentException("fen is in an incorrect format. The first part does not have 8 ranks.");
@@ -128,6 +131,11 @@ public class Board
                     _board[i++] = new Piece(p);
                 }
             }
+        }
+
+        if (i != 64)
+        {
+            throw new ArgumentException("fen is in an incorrect format. The board does not have 64 squares.");
         }
 
         // Active Colour
@@ -171,6 +179,11 @@ public class Board
         {
             throw new ArgumentException("fen is in an incorrect format. Fullmove number is not an int.");
         }
+
+        if (_fullMoveNumber < 1)
+        {
+            throw new ArgumentException("fen is in an incorrect format. Fullmove number must be greater than 0.");
+        }
     }
 
     private void InitializeBlankBoard()
@@ -179,6 +192,7 @@ public class Board
         {
             _board[i] = new Piece();
         }
+        _fullMoveNumber = 1;
     }
 
     private void InitializeStandardBoard()
@@ -187,14 +201,12 @@ public class Board
         InitializeBlankBoard();
 
         // Setup white
-        const string WHITE = "RNBQKBNRPPPPPPPP";
         for (int i = 0; i < 16; i++)
         {
             _board[i] = new Piece(WHITE[i]);
         }
 
         // Setup black
-        const string BLACK = "pppppppprnbqkbnr";
         for (int i = 0; i < 16; i++)
         {
             _board[i + 48] = new Piece(BLACK[i]);
