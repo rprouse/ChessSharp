@@ -4,4 +4,8 @@
     <OutputType>Exe</OutputType>
     <Version>0.1.0</Version>
   </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Chess.Engine.Test" />
+    </ItemGroup>
 </Project>

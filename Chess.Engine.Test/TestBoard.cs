@@ -68,8 +68,8 @@ public class TestBoard
         Board.Rank(index).ShouldBe(file, $"File for index {index} should be {file}");
     }
 
-    [TestCase(BoardInitialization.Blank, "8/8/8/8/8/8/8/8 w KQkq - 0 1")]
-    [TestCase(BoardInitialization.Standard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")]
+    [TestCase(BoardInitialization.Blank, TestFEN.Blank)]
+    [TestCase(BoardInitialization.Standard, TestFEN.Standard)]
     public void TestNewBoard(BoardInitialization bi, string fen)
     {
         var board = new Board(bi);
@@ -82,7 +82,8 @@ public class TestBoard
         Should.Throw<NotImplementedException>(() => new Board(BoardInitialization.Chess960));
     }
 
-    [TestCase("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")]
+    [TestCase(TestFEN.Blank)]
+    [TestCase(TestFEN.Standard)]
     [TestCase("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")]
     [TestCase("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2")]
     [TestCase("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2")]

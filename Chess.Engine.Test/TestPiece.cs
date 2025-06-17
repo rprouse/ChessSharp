@@ -3,6 +3,8 @@ namespace Chess.Engine.Test;
 [TestFixture]
 public class TestPiece
 {
+    const string PIECES = "PNBRQKpnbrqk ";
+
     [TestCaseSource(nameof(GetPieceTypes))]
     public void TestWhitePieceType(PieceType type)
     {
@@ -34,7 +36,6 @@ public class TestPiece
 
     public static IEnumerable<char> GetPieceTypeCharacters()
     {
-        const string PIECES = "PNBRQKpnbrqk ";
         foreach (char piece in PIECES)
         {
             yield return piece;

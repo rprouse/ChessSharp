@@ -1,27 +1,27 @@
-using System;
+using Chess.Engine.IO;
 
 namespace Chess.Engine.Commands;
 
-public static class CommandFactory
+public class CommandFactory(IConsole console)
 {
-    public static ICommandParser GetParser()
+    private readonly IConsole _console = console;
+
+    public ICommandParser GetParser()
     {
-        while (true)
+        string command = _console.ReadLine();
+        if (command != null)
         {
-            string command = Console.ReadLine();
-            if (command != null)
+            command = command.Trim();
+
+            switch (command)
             {
-                command = command.Trim().ToLowerInvariant();
+                case "uci":
+                    return new UciCommands(_console);
+                case "quit":
+                    return null;
 
-                switch (command)
-                {
-                    case "uci":
-                        return new UciCommands();
-                    case "quit":
-                        return null;
-
-                }
             }
         }
+        return null; // Invalid command or no command provided
     }
 }

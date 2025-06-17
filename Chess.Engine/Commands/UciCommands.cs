@@ -1,14 +1,17 @@
 using System;
 using System.Reflection;
+using Chess.Engine.IO;
 
 namespace Chess.Engine.Commands;
 
 public class UciCommands : ICommandParser
 {
-    Board _board;
+    private readonly IConsole _console;
+    internal Board _board;
 
-    public UciCommands()
+    public UciCommands(IConsole console)
     {
+        _console = console;
         _board = new Board(BoardInitialization.Standard);
         SendId();
         SendSupportedOptions();
@@ -19,14 +22,10 @@ public class UciCommands : ICommandParser
     {
         while (true)
         {
-            string command = Console.ReadLine();
-            if (command != null)
+            string command = _console.ReadLine();
+            if (!ParseCommand(command?.Trim()))
             {
-                if (!ParseCommand(command.Trim().ToLowerInvariant()))
-                {
-                    // If the command was not recognized, we assume it is invalid
-                    Console.WriteLine("Unknown command: {0}", command);
-                }
+                return;
             }
         }
     }
@@ -34,8 +33,8 @@ public class UciCommands : ICommandParser
     private void SendId()
     {
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
-        Console.WriteLine("id name Alteridem {0}.{1}", version.Major, version.Minor);
-        Console.WriteLine("id author Rob Prouse");
+        _console.WriteLine($"id name Alteridem {version.Major}.{version.Minor}");
+        _console.WriteLine("id author Rob Prouse");
     }
 
     private void SendSupportedOptions()
@@ -43,28 +42,34 @@ public class UciCommands : ICommandParser
         // TODO: Send any supported options here
     }
 
-    private static void SendReady()
+    private void SendReady()
     {
-        Console.WriteLine("uciok");
+        _console.WriteLine("uciok");
     }
 
+    /// <summary>
+    /// Parses the command and executes the appropriate action.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns>False will exit the engine.</returns>
     private bool ParseCommand(string command)
     {
         if (command == null)
         {
+            _console.WriteLine("Null command");
             return false; // Invalid
         }
-        string[] parts = command.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] parts = command.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0)
         {
+            _console.WriteLine($"Empty command");
             return false; // Invalid
         }
-        command = parts[0];
 
-        switch (command)
+        switch (parts[0])
         {
             case "quit":
-                return true;    // Causes the engine to exit
+                return false;    // Causes the engine to exit
             case "debug":
                 Debug(parts);
                 break;
@@ -81,7 +86,8 @@ public class UciCommands : ICommandParser
                 UciNewGame();
                 break;
             case "position":
-                Position(parts);
+                if (!Position(parts))
+                    _console.WriteLine("Invalid position command. Expected 'position fen <fen>' or 'position startpos [moves...]'");
                 break;
             case "go":
                 Go(parts);
@@ -93,7 +99,8 @@ public class UciCommands : ICommandParser
                 PonderHit();
                 break;
         }
-        return false;
+        _console.WriteLine($"Unknown command: {command}");
+        return true; // Ignore unknown commands, but keep running
     }
 
     private void Debug(string[] parts)
@@ -104,7 +111,7 @@ public class UciCommands : ICommandParser
     private void IsReady()
     {
         // TODO: Determine if any background actions are in progress
-        Console.WriteLine("readyok");
+        _console.WriteLine("readyok");
     }
 
     private void SetOption(string[] parts)
@@ -122,26 +129,26 @@ public class UciCommands : ICommandParser
         // TODO: Anything we need to do here?
     }
 
-    private void Position(string[] parts)
+    private bool Position(string[] parts)
     {
-        if (parts.Length < 2)
+        if (parts.Length < 4)
         {
-            return; // Invalid
+            return false;
         }
-        if (parts[1] == "fen" && parts.Length >= 3)
+        if (parts[1] == "fen" && parts.Length >= 9)
         {
-            _board = new Board(parts[2]);
-            PlaybackMoves(parts, 3);
+            string fen = string.Join(" ", parts, 2, 6);
+            _board = new Board(fen);
+            PlaybackMoves(parts, 8);
+            return true;
         }
-        else if (parts[1] == "startpos")
+        else if (parts[1] == "startpos" && parts[2] == "moves")
         {
             _board = new Board(BoardInitialization.Standard);
             PlaybackMoves(parts, 2);
+            return true;
         }
-        else
-        {
-            return; // Invalid    
-        }
+        return false;
     }
 
     private void PlaybackMoves(string[] parts, int start)
