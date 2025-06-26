@@ -1,29 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Text;
 
 namespace Chess.Engine;
-
-/// <summary>
-/// How should we initialize the board
-/// </summary>
-public enum BoardInitialization
-{
-    /// <summary>
-    /// A blank board with no pieces on it
-    /// </summary>
-    Blank,
-    /// <summary>
-    /// A standard chess setup
-    /// </summary>
-    Standard,
-    /// <summary>
-    /// A Chess960 (Fischer Random Chess) setup
-    /// </summary>
-    Chess960
-}
 
 [DebuggerDisplay("{FEN}")]
 public class Board
@@ -305,20 +283,14 @@ public class Board
         return new List<Move>();
     }
 
-    private bool IsBlocker(int index)
-    {
-        return _board[index].Type != PieceType.None && _board[index].Colour == _activeColour;
-    }
+    private bool IsBlocker(int index) =>
+        _board[index].Type != PieceType.None && _board[index].Colour == _activeColour;
 
-    private bool IsCapture(int index)
-    {
-        return _board[index].Type != PieceType.None && _board[index].Colour != _activeColour;
-    }
+    private bool IsCapture(int index) =>
+        _board[index].Type != PieceType.None && _board[index].Colour != _activeColour;
 
-    private bool IsKingCapture(int index)
-    {
-        return IsCapture(index) && _board[index].Type == PieceType.King;
-    }
+    private bool IsKingCapture(int index) =>
+        IsCapture(index) && _board[index].Type == PieceType.King;
 
     /// <summary>
     /// Checks if a move is blocked, is a capture, or just a regular move. Returns true if blocked or a capture.
@@ -519,10 +491,8 @@ public class Board
         return moves;
     }
 
-    public Move MakeMove(string from, string to)
-    {
-        return MakeMove(IndexFromSquare(from), IndexFromSquare(to));
-    }
+    public Move MakeMove(string from, string to) =>
+        MakeMove(IndexFromSquare(from), IndexFromSquare(to));
 
     private Move MakeMove(int from, int to)
     {
