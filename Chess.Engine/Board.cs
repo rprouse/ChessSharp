@@ -187,80 +187,13 @@ public class Board
     /// Gets the Forsyth–Edwards Notation (FEN) for this board, 
     /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     /// </summary>
-    public string FEN
-    {
-        get
-        {
-            // Board setup
-            var board = new StringBuilder(80);
-            for (int rank = 7; rank >= 0; rank--)
-            {
-                int skip = 0;
-                for (int file = 0; file < 8; file++)
-                {
-                    int i = Index(rank, file);
-                    char piece = _board[i].Character;
-                    if (piece != ' ')
-                    {
-                        if (skip > 0)
-                        {
-                            board.Append(skip);
-                            skip = 0;
-                        }
-                        board.Append(piece);
-                    }
-                    else
-                    {
-                        skip++;
-                    }
-                }
-                if (skip > 0)
-                {
-                    board.Append(skip);
-                }
-                if (rank > 0)
-                {
-                    board.Append('/');
-                }
-            }
-
-            // Active Colour
-            char activeColour = _activeColour == PieceColour.White ? 'w' : 'b';
-
-            // Castling availability
-            var castling = new StringBuilder(4);
-            if (!_whiteKingside && !_blackKingside & !_whiteQueenside && !_blackQueenside)
-            {
-                castling.Append('-');
-            }
-            if (_whiteKingside)
-                castling.Append('K');
-            if (_whiteQueenside)
-                castling.Append('Q');
-            if (_blackKingside)
-                castling.Append('k');
-            if (_blackQueenside)
-                castling.Append('q');
-
-            // En passant target square
-            string target = SquareFromIndex(_enPassantTarget);
-
-            // Halfmove clock
-
-            // Fullmove number
-
-            return string.Format("{0} {1} {2} {3} {4} {5}", board, activeColour, castling, target, _halfMoveClock, _fullMoveNumber);
-        }
-    }
+    public string FEN => this.ToFEN();
 
     /// <summary>
     /// A simple text representation of the board
     /// </summary>
     /// <returns></returns>
-    public override string ToString()
-    {
-        return FEN;
-    }
+    public override string ToString() => FEN;
 
     /// <summary>
     /// Gets an index into the board array for a given square designation.

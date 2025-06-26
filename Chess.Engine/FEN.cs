@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Text;
 
 namespace Chess.Engine;
 
@@ -24,7 +25,7 @@ public static class FEN
             throw new ArgumentException("fen is in an incorrect format. The first part does not have 8 ranks.");
         }
 
-        // Setup the board
+        // Setup the fen
         board.InitializeBlankBoard();
         int i = 0;
         // FEN starts with rank 8 and ends with rank 1
@@ -108,5 +109,71 @@ public static class FEN
             throw new ArgumentException("fen is in an incorrect format. Fullmove number must be greater than 0.");
         }
         board.FullMoveNumber = fullMoveNumber;
+    }
+
+    /// <summary>
+    /// Gets the Forsyth–Edwards Notation (FEN) for this fen, 
+    /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+    /// </summary>
+    public static string ToFEN(this Board board)
+    {
+
+        // Board setup
+        var fen = new StringBuilder(80);
+        for (int rank = 7; rank >= 0; rank--)
+        {
+            int skip = 0;
+            for (int file = 0; file < 8; file++)
+            {
+                int i = Board.Index(rank, file);
+                char piece = board[i].Character;
+                if (piece != ' ')
+                {
+                    if (skip > 0)
+                    {
+                        fen.Append(skip);
+                        skip = 0;
+                    }
+                    fen.Append(piece);
+                }
+                else
+                {
+                    skip++;
+                }
+            }
+            if (skip > 0)
+            {
+                fen.Append(skip);
+            }
+            if (rank > 0)
+            {
+                fen.Append('/');
+            }
+        }
+
+        // Active Colour
+        char activeColour = board.ActiveColour == PieceColour.White ? 'w' : 'b';
+
+        // Castling availability
+        var castling = new StringBuilder(4);
+        if (!board.WhiteKingside && !board.BlackKingside & !board.WhiteQueenside && !board.BlackQueenside)
+        {
+            castling.Append('-');
+        }
+        if (board.WhiteKingside)
+            castling.Append('K');
+        if (board.WhiteQueenside)
+            castling.Append('Q');
+        if (board.BlackKingside)
+            castling.Append('k');
+        if (board.BlackQueenside)
+            castling.Append('q');
+
+        // En passant target square
+        string target = Board.SquareFromIndex(board.EnPassantTarget);
+
+        // Halfmove clock
+        // Fullmove number
+        return string.Format("{0} {1} {2} {3} {4} {5}", fen, activeColour, castling, target, board.HalfMoveClock, board.FullMoveNumber);
     }
 }
