@@ -1,7 +1,7 @@
 namespace Chess.Engine.Test;
 
 [TestFixture]
-public class TestPiece
+public class PieceTests
 {
     const string PIECES = "PNBRQKpnbrqk ";
 

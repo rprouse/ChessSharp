@@ -1,7 +1,7 @@
 namespace Chess.Engine.Test;
 
 [TestFixture]
-public class TestMove
+public class MoveTests
 {
     [TestCase(PieceType.None, MoveFlags.QuietMove)]
     [TestCase(PieceType.None, MoveFlags.QueenCastle)]

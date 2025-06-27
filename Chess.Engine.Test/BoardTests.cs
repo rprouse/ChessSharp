@@ -1,7 +1,7 @@
 namespace Chess.Engine.Test;
 
 [TestFixture]
-public class TestBoard
+public class BoardTests
 {
     [TestCase("-", -1)]
     [TestCase("a1", 00)]

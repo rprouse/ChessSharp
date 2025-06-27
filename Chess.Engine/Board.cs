@@ -6,6 +6,11 @@ namespace Chess.Engine;
 [DebuggerDisplay("{FEN}")]
 public class Board
 {
+    /// <summary>
+    /// Default constructor for Board. Use BoardFactory to initialize.
+    /// </summary>
+    internal Board() { }
+
     // An 8*8 Board
     //
     //      a  b  c  d  e  f  g  h
@@ -25,7 +30,7 @@ public class Board
     /// <summary>
     /// Index property that gets or sets the Piece in Board
     /// </summary>
-    internal Piece this[int i]
+    public Piece this[int i]
     {
         get { return _board[i]; }
         set { _board[i] = value; }
@@ -34,48 +39,43 @@ public class Board
     /// <summary>
     /// The index into the board if a pawn just made a two square move. It is the square behind the pawn. -1 otherwise.
     /// </summary>
-    internal int EnPassantTarget { get; set; } = -1;
+    public int EnPassantTarget { get; set; } = -1;
 
     /// <summary>
     /// Castling availability for white kingside
     /// </summary>
-    internal bool WhiteKingside { get; set; } = true;
+    public bool WhiteKingside { get; set; } = true;
 
     /// <summary>
     /// Castling availability for white queenside
     /// </summary>
-    internal bool WhiteQueenside { get; set; } = true;
+    public bool WhiteQueenside { get; set; } = true;
 
     /// <summary>
     /// Castling availability for black kingside
     /// </summary>
-    internal bool BlackKingside { get; set; } = true;
+    public bool BlackKingside { get; set; } = true;
 
     /// <summary>
     /// Castling availability for black queenside
     /// </summary>
-    internal bool BlackQueenside { get; set; } = true;
+    public bool BlackQueenside { get; set; } = true;
 
     /// <summary>
     /// Who has the next move?
     /// </summary>
-    internal PieceColour ActiveColour { get; set; } = PieceColour.White;
+    public PieceColour ActiveColour { get; set; } = PieceColour.White;
 
     /// <summary>
     /// This is the number of half moves since the last pawn advance or capture.
     /// This is used to determine if a draw can be claimed under the fifty-move rule.
     /// </summary>
-    internal int HalfMoveClock { get; set; } = 0;
+    public int HalfMoveClock { get; set; } = 0;
 
     /// <summary>
     /// The number of the full move. It starts at 1, and is incremented after Black's move.
     /// </summary>
-    internal int FullMoveNumber { get; set; } = 0;
-
-    /// <summary>
-    /// Default constructor for Board. Use BoardFactory to initialize.
-    /// </summary>
-    internal Board() { }
+    public int FullMoveNumber { get; set; } = 0;
 
     /// <summary>
     /// Gets the Forsyth–Edwards Notation (FEN) for this board,
