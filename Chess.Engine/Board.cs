@@ -6,7 +6,7 @@ namespace Chess.Engine;
 [DebuggerDisplay("{FEN}")]
 public class Board
 {
-    // An 8*8 Board 
+    // An 8*8 Board
     //
     //      a  b  c  d  e  f  g  h
     //    -------------------------
@@ -26,24 +26,6 @@ public class Board
 
     private readonly Piece[] _board = new Piece[64];
 
-    // The index into the board if a pawn just made a two square move. It is the square behind the pawn. -1 otherwise.
-    private int _enPassantTarget = -1;
-
-    // Castling Availability
-    private bool _whiteKingside = true;
-    private bool _whiteQueenside = true;
-    private bool _blackKingside = true;
-    private bool _blackQueenside = true;
-
-    // Who has the next move?
-    private PieceColour _activeColour = PieceColour.White;
-
-    // This is the number of halfmoves since the last pawn advance or capture. This is used to determine if a draw can be claimed under the fifty-move rule.
-    private int _halfMoveClock = 0;
-
-    // The number of the full move. It starts at 1, and is incremented after Black's move.
-    private int _fullMoveNumber = 0;
-
     // Index property that gets or sets the Piece in Board
     internal Piece this[int i]
     {
@@ -51,53 +33,25 @@ public class Board
         set { _board[i] = value; }
     }
 
-    internal int EnPassantTarget
-    {
-        get { return _enPassantTarget; }
-        set { _enPassantTarget = value; }
-    }
+    // The index into the board if a pawn just made a two square move. It is the square behind the pawn. -1 otherwise.
+    internal int EnPassantTarget { get; set; } = -1;
 
-    internal bool WhiteKingside
-    {
-        get { return _whiteKingside; }
-        set { _whiteKingside = value; }
-    }
+    // Castling Availability
+    internal bool WhiteKingside { get; set; } = true;
+    internal bool WhiteQueenside { get; set; } = true;
+    internal bool BlackKingside { get; set; } = true;
+    internal bool BlackQueenside { get; set; } = true;
 
-    internal bool WhiteQueenside
-    {
-        get { return _whiteQueenside; }
-        set { _whiteQueenside = value; }
-    }
+    // Who has the next move?
+    internal PieceColour ActiveColour { get; set; } = PieceColour.White;
 
-    internal bool BlackKingside
-    {
-        get { return _blackKingside; }
-        set { _blackKingside = value; }
-    }
+    // This is the number of halfmoves since the last pawn advance or capture. This is used to determine if a draw can be claimed under the fifty-move rule.
+    internal int HalfMoveClock { get; set; } = 0;
 
-    internal bool BlackQueenside
-    {
-        get { return _blackQueenside; }
-        set { _blackQueenside = value; }
-    }
+    // The number of the full move. It starts at 1, and is incremented after Black's move.
+    internal int FullMoveNumber { get; set; } = 0;
 
-    internal PieceColour ActiveColour
-    { 
-        get { return _activeColour; }
-        set { _activeColour = value; }
-    }
 
-    internal int HalfMoveClock
-    {
-        get { return _halfMoveClock; }
-        set { _halfMoveClock = value; }
-    }
-
-    internal int FullMoveNumber
-    {
-        get { return _fullMoveNumber; }
-        set { _fullMoveNumber = value; }
-    }
 
     /// <summary>
     /// Constructs a board based on the given setup
@@ -119,7 +73,7 @@ public class Board
     }
 
     /// <summary>
-    /// Construct from Forsyth–Edwards Notation (FEN), 
+    /// Construct from Forsyth–Edwards Notation (FEN),
     /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     /// </summary>
     /// <param name="fen"></param>
@@ -134,7 +88,7 @@ public class Board
         {
             _board[i] = new Piece();
         }
-        _fullMoveNumber = 1;
+        FullMoveNumber = 1;
     }
 
     private void InitializeStandardBoard()
@@ -162,7 +116,7 @@ public class Board
     }
 
     /// <summary>
-    /// Gets the Forsyth–Edwards Notation (FEN) for this board, 
+    /// Gets the Forsyth–Edwards Notation (FEN) for this board,
     /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     /// </summary>
     public string FEN => this.ToFEN();
@@ -259,7 +213,7 @@ public class Board
     {
         if (i > -1 &&
             _board[i].Type != PieceType.None &&
-            _board[i].Colour == _activeColour)
+            _board[i].Colour == ActiveColour)
         {
             switch (_board[i].Type)
             {
@@ -284,10 +238,10 @@ public class Board
     }
 
     private bool IsBlocker(int index) =>
-        _board[index].Type != PieceType.None && _board[index].Colour == _activeColour;
+        _board[index].Type != PieceType.None && _board[index].Colour == ActiveColour;
 
     private bool IsCapture(int index) =>
-        _board[index].Type != PieceType.None && _board[index].Colour != _activeColour;
+        _board[index].Type != PieceType.None && _board[index].Colour != ActiveColour;
 
     private bool IsKingCapture(int index) =>
         IsCapture(index) && _board[index].Type == PieceType.King;
@@ -378,7 +332,7 @@ public class Board
         foreach (int capture in captures)
         {
             // En-Passant Capture
-            if (_enPassantTarget == capture)
+            if (EnPassantTarget == capture)
             {
                 moves.Add(new Move(from, capture, MoveFlags.EnPassantCapture));
             }
@@ -411,7 +365,7 @@ public class Board
         foreach (int capture in captures)
         {
             // En-Passant Capture
-            if (_enPassantTarget == capture)
+            if (EnPassantTarget == capture)
             {
                 moves.Add(new Move(from, capture, MoveFlags.EnPassantCapture));
             }
@@ -504,11 +458,11 @@ public class Board
             // Remove piece from En-Passant capture
             if (move.EnPassantCapture)
             {
-                int diff = _activeColour == PieceColour.White ? -8 : 8;
+                int diff = ActiveColour == PieceColour.White ? -8 : 8;
                 _board[move.To + diff] = new Piece();
             }
 
-            _enPassantTarget = move.EnPassantTarget;
+            EnPassantTarget = move.EnPassantTarget;
 
             // TODO: Disable move if it results in check
 
@@ -519,47 +473,47 @@ public class Board
             // Disable castling flags
             if (_board[move.From].Type == PieceType.King)
             {
-                if (_activeColour == PieceColour.White)
+                if (ActiveColour == PieceColour.White)
                 {
-                    _whiteKingside = false;
-                    _whiteQueenside = false;
+                    WhiteKingside = false;
+                    WhiteQueenside = false;
                 }
                 else
                 {
-                    _blackKingside = false;
-                    _blackQueenside = false;
+                    BlackKingside = false;
+                    BlackQueenside = false;
                 }
             }
             else if (_board[move.From].Type == PieceType.Rook)
             {
-                if (_activeColour == PieceColour.White && move.From == 0)
-                    _whiteQueenside = false;
-                else if (_activeColour == PieceColour.White && move.From == 7)
-                    _whiteKingside = false;
-                else if (_activeColour == PieceColour.Black && move.From == 56)
-                    _blackQueenside = false;
-                else if (_activeColour == PieceColour.Black && move.From == 63)
-                    _blackKingside = false;
+                if (ActiveColour == PieceColour.White && move.From == 0)
+                    WhiteQueenside = false;
+                else if (ActiveColour == PieceColour.White && move.From == 7)
+                    WhiteKingside = false;
+                else if (ActiveColour == PieceColour.Black && move.From == 56)
+                    BlackQueenside = false;
+                else if (ActiveColour == PieceColour.Black && move.From == 63)
+                    BlackKingside = false;
             }
 
             // Update player, clock, etc
-            if (_activeColour == PieceColour.Black)
+            if (ActiveColour == PieceColour.Black)
             {
-                _activeColour = PieceColour.White;
-                _fullMoveNumber++;
+                ActiveColour = PieceColour.White;
+                FullMoveNumber++;
             }
             else
             {
-                _activeColour = PieceColour.Black;
+                ActiveColour = PieceColour.Black;
             }
             // TODO: Correctly increment the halfmove clock
             //if (move.QuietMove)
             //{
-            //    _halfMoveClock++;
+            //    HalfMoveClock++;
             //}
             //else
             //{
-            //    _halfMoveClock = 0;
+            //    HalfMoveClock = 0;
             //}
             // Update the board
             _board[move.To] = _board[move.From];
