@@ -138,7 +138,7 @@ public class UciCommands : ICommandParser
         if (parts[1] == "fen" && parts.Length >= 9)
         {
             string fen = string.Join(" ", parts, 2, 6);
-            _board = new Board(fen);
+            _board = BoardFactory.Create(fen);
             PlaybackMoves(parts, 8);
             return true;
         }

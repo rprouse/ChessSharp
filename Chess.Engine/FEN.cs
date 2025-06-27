@@ -26,7 +26,7 @@ public static class FEN
         }
 
         // Setup the fen
-        BoardFactory.InitializeBlankBoard(board);
+        board.InitializeBlankBoard();
         int i = 0;
         // FEN starts with rank 8 and ends with rank 1
         for (int r = 7; r >= 0; r--)

@@ -20,10 +20,6 @@ public class Board
     // 1 | 00 01 02 03 04 05 06 07 | 1
     //    -------------------------
     //      a  b  c  d  e  f  g  h
-
-    const string WHITE = "RNBQKBNRPPPPPPPP";
-    const string BLACK = "pppppppprnbqkbnr";
-
     private readonly Piece[] _board = new Piece[64];
 
     /// <summary>
@@ -66,7 +62,7 @@ public class Board
     internal PieceColour ActiveColour { get; set; } = PieceColour.White;
 
     /// <summary>
-    /// This is the number of halfmoves since the last pawn advance or capture.
+    /// This is the number of half moves since the last pawn advance or capture.
     /// This is used to determine if a draw can be claimed under the fifty-move rule.
     /// </summary>
     internal int HalfMoveClock { get; set; } = 0;
@@ -79,21 +75,10 @@ public class Board
     /// <summary>
     /// Default constructor for Board. Use BoardFactory to initialize.
     /// </summary>
-    public Board() { }
-
-    /// <summary>
-    /// Construct from Forsyth–Edwards Notation (FEN),
-    /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-    /// </summary>
-    /// <param name="fen"></param>
-    public Board(string fen)
-    {
-        this.Initialize(fen);
-    }
+    internal Board() { }
 
     /// <summary>
     /// Gets the Forsyth–Edwards Notation (FEN) for this board,
-    /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     /// </summary>
     public string FEN => this.ToFEN();
 

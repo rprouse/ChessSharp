@@ -1,61 +1,73 @@
 using System;
 
-namespace Chess.Engine
+namespace Chess.Engine;
+
+/// <summary>
+/// Factory class for creating and initializing Board instances.
+/// </summary>
+public static class BoardFactory
 {
+    const string WHITE = "RNBQKBNRPPPPPPPP";
+    const string BLACK = "pppppppprnbqkbnr";
+
     /// <summary>
-    /// Factory class for creating and initializing Board instances.
+    /// Creates a Board with the specified initialization type.
     /// </summary>
-    public static class BoardFactory
+    public static Board Create(BoardInitialization boardInitialization)
     {
-        /// <summary>
-        /// Creates a Board with the specified initialization type.
-        /// </summary>
-        public static Board Create(BoardInitialization boardInitialization)
+        var board = new Board();
+        switch (boardInitialization)
         {
-            var board = new Board();
-            switch (boardInitialization)
-            {
-                case BoardInitialization.Blank:
-                    InitializeBlankBoard(board);
-                    break;
-                case BoardInitialization.Standard:
-                    InitializeStandardBoard(board);
-                    break;
-                case BoardInitialization.Chess960:
-                    InitializeChess960Board(board);
-                    break;
-            }
-            return board;
+            case BoardInitialization.Blank:
+                InitializeBlankBoard(board);
+                break;
+            case BoardInitialization.Standard:
+                InitializeStandardBoard(board);
+                break;
+            case BoardInitialization.Chess960:
+                InitializeChess960Board(board);
+                break;
         }
+        return board;
+    }
 
-        public static void InitializeBlankBoard(Board board)
-        {
-            for (int i = 0; i < 64; i++)
-            {
-                board[i] = new Piece();
-            }
-            board.FullMoveNumber = 1;
-        }
+    /// <summary>
+    /// Construct from Forsyth–Edwards Notation (FEN),
+    /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+    /// </summary>
+    /// <param name="fen"></param>
+    public static Board Create(string fen)
+    {
+        var board = new Board();
+        board.Initialize(fen);
+        return board;
+    }
 
-        public static void InitializeStandardBoard(Board board)
+    internal static void InitializeBlankBoard(this Board board)
+    {
+        for (int i = 0; i < 64; i++)
         {
-            InitializeBlankBoard(board);
-            const string WHITE = "RNBQKBNRPPPPPPPP";
-            const string BLACK = "pppppppprnbqkbnr";
-            for (int i = 0; i < 16; i++)
-            {
-                board[i] = new Piece(WHITE[i]);
-            }
-            for (int i = 0; i < 16; i++)
-            {
-                board[i + 48] = new Piece(BLACK[i]);
-            }
+            board[i] = new Piece();
         }
+        board.FullMoveNumber = 1;
+    }
 
-        public static void InitializeChess960Board(Board board)
+    internal static void InitializeStandardBoard(this Board board)
+    {
+        InitializeBlankBoard(board);
+        for (int i = 0; i < 16; i++)
         {
-            // TODO: Setup a Chess960 board
-            throw new NotImplementedException();
+            board[i] = new Piece(WHITE[i]);
         }
+        for (int i = 0; i < 16; i++)
+        {
+            board[i + 48] = new Piece(BLACK[i]);
+        }
+    }
+
+    internal static void InitializeChess960Board(this Board board)
+    {
+        // TODO: Setup a Chess960 board
+        throw new NotImplementedException();
     }
 }
