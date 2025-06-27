@@ -12,7 +12,7 @@ public class UciCommands : ICommandParser
     public UciCommands(IConsole console)
     {
         _console = console;
-        _board = new Board(BoardInitialization.Standard);
+        _board = BoardFactory.Create(BoardInitialization.Standard);
         SendId();
         SendSupportedOptions();
         SendReady();
@@ -144,7 +144,7 @@ public class UciCommands : ICommandParser
         }
         else if (parts[1] == "startpos" && parts[2] == "moves")
         {
-            _board = new Board(BoardInitialization.Standard);
+            _board = BoardFactory.Create(BoardInitialization.Standard);
             PlaybackMoves(parts, 2);
             return true;
         }

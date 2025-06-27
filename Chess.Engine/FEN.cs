@@ -7,7 +7,7 @@ namespace Chess.Engine;
 public static class FEN
 {
     /// <summary>
-    /// Construct from Forsyth–Edwards Notation (FEN), 
+    /// Construct from Forsyth–Edwards Notation (FEN),
     /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     /// </summary>
     /// <param name="fen"></param>
@@ -26,7 +26,7 @@ public static class FEN
         }
 
         // Setup the fen
-        board.InitializeBlankBoard();
+        BoardFactory.InitializeBlankBoard(board);
         int i = 0;
         // FEN starts with rank 8 and ends with rank 1
         for (int r = 7; r >= 0; r--)
@@ -112,7 +112,7 @@ public static class FEN
     }
 
     /// <summary>
-    /// Gets the Forsyth–Edwards Notation (FEN) for this fen, 
+    /// Gets the Forsyth–Edwards Notation (FEN) for this fen,
     /// http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     /// </summary>
     public static string ToFEN(this Board board)

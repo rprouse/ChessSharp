@@ -77,23 +77,9 @@ public class Board
     internal int FullMoveNumber { get; set; } = 0;
 
     /// <summary>
-    /// Constructs a board based on the given setup
+    /// Default constructor for Board. Use BoardFactory to initialize.
     /// </summary>
-    public Board(BoardInitialization board)
-    {
-        switch (board)
-        {
-            case BoardInitialization.Blank:
-                InitializeBlankBoard();
-                break;
-            case BoardInitialization.Standard:
-                InitializeStandardBoard();
-                break;
-            case BoardInitialization.Chess960:
-                InitializeChess960Board();
-                break;
-        }
-    }
+    public Board() { }
 
     /// <summary>
     /// Construct from Forsyth–Edwards Notation (FEN),
@@ -103,39 +89,6 @@ public class Board
     public Board(string fen)
     {
         this.Initialize(fen);
-    }
-
-    internal void InitializeBlankBoard()
-    {
-        for (int i = 0; i < 64; i++)
-        {
-            _board[i] = new Piece();
-        }
-        FullMoveNumber = 1;
-    }
-
-    private void InitializeStandardBoard()
-    {
-        // Clear all the squares
-        InitializeBlankBoard();
-
-        // Setup white
-        for (int i = 0; i < 16; i++)
-        {
-            _board[i] = new Piece(WHITE[i]);
-        }
-
-        // Setup black
-        for (int i = 0; i < 16; i++)
-        {
-            _board[i + 48] = new Piece(BLACK[i]);
-        }
-    }
-
-    private void InitializeChess960Board()
-    {
-        // TODO: Setup a Chess960 board
-        throw new System.NotImplementedException();
     }
 
     /// <summary>
