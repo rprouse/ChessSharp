@@ -4,9 +4,16 @@ using System.Globalization;
 namespace Chess.Engine;
 
 [DebuggerDisplay("{Character}")]
-public sealed class Piece
+public struct Piece
 {
-    private readonly byte _store;
+    const string VALID_PIECES = "PNBRQKpnbrqk";
+
+    private readonly byte _store = 0x00;
+
+    /// <summary>
+    /// Constructs a blank piece
+    /// </summary>
+    public Piece() { }
 
     public Piece(PieceType type, PieceColour colour)
     {
@@ -19,9 +26,8 @@ public sealed class Piece
     /// <param name="piece"></param>
     public Piece(char piece)
     {
-        if (!"PNBRQKpnbrqk".Contains(piece.ToString(CultureInfo.InvariantCulture)))
+        if (!VALID_PIECES.Contains(piece))
         {
-            _store = 0x00;
             return;
         }
         PieceColour colour = char.IsUpper(piece) ? PieceColour.White : PieceColour.Black;
@@ -52,33 +58,15 @@ public sealed class Piece
         _store = (byte)((byte)type | (byte)colour);
     }
 
-    public Piece(byte piece)
-    {
-        _store = piece;
-    }
-
-    /// <summary>
-    /// Constructs a blank piece
-    /// </summary>
-    public Piece() : this(0x00)
-    {
-    }
-
     /// <summary>
     /// The type of the piece, for example, pawn, knight, etc.
     /// </summary>
-    public PieceType Type
-    {
-        get { return (PieceType)(_store & 0x0F); }
-    }
+    public PieceType Type => (PieceType)(_store & 0x0F);
 
     /// <summary>
     /// The colour of the piece, black or white
     /// </summary>
-    public PieceColour Colour
-    {
-        get { return (PieceColour)(_store & 0x10); }
-    }
+    public PieceColour Colour => (PieceColour)(_store & 0x10);
 
     /// <summary>
     /// Returns the character that represents the piece as per a FEN diagram

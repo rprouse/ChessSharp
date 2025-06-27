@@ -2,25 +2,6 @@ using System;
 
 namespace Chess.Engine;
 
-// http://chessprogramming.wikispaces.com/Encoding+Moves
-[Flags]
-public enum MoveFlags : byte
-{
-    QuietMove = 0x00,
-    DoublePawnPush = 0x01,
-    KingCastle = 0x02,
-    QueenCastle = 0x03,
-    Capture = 0x04,
-    EnPassantCapture = 0x05,
-    Promotion = 0x08,
-    KnightPromotion = 0x08,
-    BishopPromotion = 0x09,
-    RookPromotion = 0x0A,
-    QueenPromotion = 0x0B,
-
-    Invalid = 0x80
-}
-
 public class Move : IEquatable<Move>
 {
     private readonly MoveFlags _flags;
@@ -51,10 +32,8 @@ public class Move : IEquatable<Move>
     /// <summary>
     /// If the last move was a double pawn push, gets the EnPassant square
     /// </summary>
-    public int EnPassantTarget
-    {
-        get { return DoublePawnPush ? To - (To - From) / 2 : -1; }
-    }
+    public int EnPassantTarget =>
+        DoublePawnPush ? To - (To - From) / 2 : -1;
 
     /// <summary>
     /// If the piece was promoted, what it was promoted to
@@ -72,66 +51,47 @@ public class Move : IEquatable<Move>
     /// <summary>
     /// No captures, castles or stuff like that
     /// </summary>
-    public bool QuietMove
-    {
-        get { return _flags == MoveFlags.QuietMove; }
-    }
+    public bool QuietMove =>_flags == MoveFlags.QuietMove;
 
     /// <summary>
     /// True if this move captures a piece
     /// </summary>
-    public bool Captures
-    {
-        get { return (_flags & MoveFlags.Capture) == MoveFlags.Capture; }
-    }
+    public bool Captures => (_flags & MoveFlags.Capture) == MoveFlags.Capture;
 
     /// <summary>
     /// True if this move is a double pawn push
     /// </summary>
-    public bool DoublePawnPush
-    {
-        get { return !EnPassantCapture && (_flags & MoveFlags.DoublePawnPush) == MoveFlags.DoublePawnPush; }
-    }
+    public bool DoublePawnPush =>
+        !EnPassantCapture && (_flags & MoveFlags.DoublePawnPush) == MoveFlags.DoublePawnPush;
 
     /// <summary>
     /// True if this move is a king castle
     /// </summary>
-    public bool KingCastle
-    {
-        get { return (_flags & MoveFlags.KingCastle) == MoveFlags.KingCastle; }
-    }
+    public bool KingCastle =>
+        (_flags & MoveFlags.KingCastle) == MoveFlags.KingCastle;
 
     /// <summary>
     /// True if this move is a queen castle
     /// </summary>
-    public bool QueenCastle
-    {
-        get { return (_flags & MoveFlags.QueenCastle) == MoveFlags.QueenCastle; }
-    }
+    public bool QueenCastle =>
+        (_flags & MoveFlags.QueenCastle) == MoveFlags.QueenCastle;
 
     /// <summary>
     /// True if this move is a castle
     /// </summary>
-    public bool Castle
-    {
-        get { return KingCastle || QueenCastle; }
-    }
+    public bool Castle => KingCastle || QueenCastle;
 
     /// <summary>
     /// True if this move is an En Passant capture
     /// </summary>
-    public bool EnPassantCapture
-    {
-        get { return (_flags & MoveFlags.EnPassantCapture) == MoveFlags.EnPassantCapture; }
-    }
+    public bool EnPassantCapture =>
+        (_flags & MoveFlags.EnPassantCapture) == MoveFlags.EnPassantCapture;
 
     /// <summary>
     /// True if this move is valid
     /// </summary>
-    public bool Valid
-    {
-        get { return (_flags & MoveFlags.Invalid) != MoveFlags.Invalid; }
-    }
+    public bool Valid =>
+        (_flags & MoveFlags.Invalid) != MoveFlags.Invalid;
 
     /// <summary>
     /// Indicates whether the current object is equal to another object of the same type.
@@ -158,7 +118,7 @@ public class Move : IEquatable<Move>
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (obj.GetType() != GetType()) return false;
         return Equals((Move)obj);
     }
 
@@ -179,11 +139,15 @@ public class Move : IEquatable<Move>
 
     public static bool operator ==(Move left, Move right)
     {
-        return Equals(left, right);
+        if (ReferenceEquals(left, null)) return ReferenceEquals(right, null);
+        if (ReferenceEquals(right, null)) return false;
+        return left.Equals(right);
     }
 
     public static bool operator !=(Move left, Move right)
     {
-        return !Equals(left, right);
+        if (ReferenceEquals(left, null)) return !ReferenceEquals(right, null);
+        if (ReferenceEquals(right, null)) return true;
+        return !left.Equals(right);
     }
 }
