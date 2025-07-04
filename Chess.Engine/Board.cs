@@ -426,6 +426,11 @@ public class Board
             EnPassantTarget = move.EnPassantTarget;
 
             // TODO: Disable move if it results in check
+            if (ResultsInCheck(move))
+            {
+                move.Invalidate();
+                return move;
+            }
 
             // TODO: Disable castling if it passes through check
 
@@ -483,6 +488,149 @@ public class Board
             // TODO: Add to move list
         }
         return move;
+    }
+
+    private bool ResultsInCheck(Move move)
+    {
+        // This is a stub for now. We will need to implement a method to check if the move results in check.
+        // This will involve simulating the move and checking if the king is still safe.
+        int kingIndex = FindKing(ActiveColour);
+        if (kingIndex == -1)
+        {
+            // No king found, this is an invalid state
+            return true;
+        }
+        // Temporarily make the move
+        Piece tempPiece = _board[move.To];
+        _board[move.To] = _board[move.From];
+        _board[move.From] = new Piece();
+
+        bool inCheck = IsInCheck(kingIndex);
+
+        // Undo the move
+        _board[move.From] = _board[move.To];
+        _board[move.To] = tempPiece;
+        return inCheck;
+    }
+
+    private bool IsInCheck(int kingIndex)
+    {
+        // Check if the king is in check by any opposing piece
+        if (kingIndex < 0 || kingIndex >= 64 || _board[kingIndex].Type != PieceType.King)
+        {
+            return false; // Invalid king index
+        }
+        PieceColour opponentColour = _board[kingIndex].Colour == PieceColour.White ? PieceColour.Black : PieceColour.White;
+
+        // Check horizontally and vertically for rooks and queens
+        for (int i = 1; i < 8; i++)
+        {
+            // Check right
+            if (kingIndex % 8 + i < 8)
+            {
+                int index = kingIndex + i;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Rook || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+            // Check left
+            if (kingIndex % 8 - i >= 0)
+            {
+                int index = kingIndex - i;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Rook || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+            // Check down
+            if (kingIndex / 8 + i < 8)
+            {
+                int index = kingIndex + i * 8;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Rook || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+            // Check up
+            if (kingIndex / 8 - i >= 0)
+            {
+                int index = kingIndex - i * 8;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Rook || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+        }
+
+        // Check diagonally for bishops and queens
+        for (int i = 1; i < 8; i++)
+        {
+            // Check top-right
+            if (kingIndex % 8 + i < 8 && kingIndex / 8 - i >= 0)
+            {
+                int index = kingIndex - i * 7;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Bishop || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+            // Check top-left
+            if (kingIndex % 8 - i >= 0 && kingIndex / 8 - i >= 0)
+            {
+                int index = kingIndex - i * 9;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Bishop || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+            // Check bottom-right
+            if (kingIndex % 8 + i < 8 && kingIndex / 8 + i < 8)
+            {
+                int index = kingIndex + i * 9;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Bishop || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+            // Check bottom-left
+            if (kingIndex % 8 - i >= 0 && kingIndex / 8 + i < 8)
+            {
+                int index = kingIndex + i * 7;
+                if (_board[index].Colour == opponentColour && (_board[index].Type == PieceType.Bishop || _board[index].Type == PieceType.Queen))
+                    return true;
+                if (_board[index].Type != PieceType.None) break; // Blocked
+            }
+        }
+
+        // Check for knights
+        int[] knightMoves = { -17, -15, -10, -6, 6, 10, 15, 17 };
+        foreach (int move in knightMoves)
+        {
+            int index = kingIndex + move;
+            if (index >= 0 && index < 64 && _board[index].Colour == opponentColour && _board[index].Type == PieceType.Knight)
+            {
+                return true; // Knight attack
+            }
+        }
+
+        // Check for pawns
+        int[] pawnAttacks = ActiveColour == PieceColour.White ? [-9, -7] : [9, 7];
+        foreach (int attack in pawnAttacks)
+        {
+            int index = kingIndex + attack;
+            if (index >= 0 && index < 64 && _board[index].Colour == opponentColour && _board[index].Type == PieceType.Pawn)
+            {
+                return true; // Pawn attack
+            }
+        }
+
+        return false; // King is safe
+    }
+
+    private int FindKing(PieceColour colour)
+    {
+        for (int i = 0; i < 64; i++)
+        {
+            if (_board[i].Type == PieceType.King && _board[i].Colour == colour)
+            {
+                return i;
+            }
+        }
+        return -1; // King not found
     }
 
     /// <summary>

@@ -4,7 +4,7 @@ namespace Chess.Engine;
 
 public class Move : IEquatable<Move>
 {
-    private readonly MoveFlags _flags;
+    private MoveFlags _flags;
 
     /// <summary>
     /// Construct a move
@@ -17,6 +17,11 @@ public class Move : IEquatable<Move>
         From = @from;
         To = to;
         _flags = flags;
+    }
+
+    public void Invalidate()
+    {
+        _flags |= MoveFlags.Invalid;
     }
 
     /// <summary>

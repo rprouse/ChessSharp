@@ -109,4 +109,13 @@ public class MoveTests
         (right != left).ShouldNotBe(areEqual);
         right.Equals(left).ShouldBe(areEqual);
     }
+
+    [Test]
+    public void CanInvalidateMove()
+    {
+        var move = new Move(0, 0, MoveFlags.QuietMove);
+        move.Valid.ShouldBeTrue();
+        move.Invalidate();
+        move.Valid.ShouldBeFalse();
+    }
 }
