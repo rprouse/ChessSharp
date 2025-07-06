@@ -134,10 +134,30 @@ public class CheckTests
     [TestCase("q7/1P6/2K5/8/8/8/6k1/8 b - - 0 1", PieceColour.White, false)]
     [TestCase("8/8/2K5/3P4/8/8/5k2/7q b - - 0 1", PieceColour.White, false)]
 
-    public void CanDetermineCheck(string fen, PieceColour colour, bool expected)
+    // Knight checks
+    [TestCase("1N6/8/2k5/8/8/8/5K2/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("3N4/8/2k5/8/8/8/5K2/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/N7/2k5/8/8/8/5K2/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/2k5/N7/8/8/5K2/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("1k6/8/N7/8/8/8/5K2/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("1k6/8/2N5/8/8/8/5K2/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/8/8/8/8/k4K2/2N5 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/8/8/8/8/2N2K2/k7 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/2K5/8/8/8/5N2/7k b - - 0 1", PieceColour.Black, true)]
+    [TestCase("1n6/8/2K5/8/8/8/5k2/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("3n4/8/2K5/8/8/8/5k2/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/n7/2K5/8/8/8/5k2/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/2K5/n7/8/8/5k2/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("1K6/8/n7/8/8/8/5k2/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("1K6/8/2n5/8/8/8/5k2/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/8/8/8/8/K4k2/2n5 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/8/8/8/8/2n2k2/K7 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/2k5/8/8/8/5n2/7K b - - 0 1", PieceColour.White, true)]
+
+    public void CanDetermineCheck(string fen, PieceColour kingColour, bool expected)
     {
         var board = BoardFactory.Create(fen);
-        int kingIndex = board.FindKing(colour);
+        int kingIndex = board.FindKing(kingColour);
         var result = board.IsInCheck(kingIndex);
         result.ShouldBe(expected);
     }
