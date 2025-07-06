@@ -505,6 +505,12 @@ public class Board
         _board[move.To] = _board[move.From];
         _board[move.From] = new Piece();
 
+        // Update kingIndex if the moved piece is the king
+        if (_board[move.To].Type == PieceType.King)
+        {
+            kingIndex = move.To;
+        }
+
         bool inCheck = IsInCheck(kingIndex);
 
         // Undo the move

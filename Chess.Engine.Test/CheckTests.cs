@@ -24,6 +24,7 @@ public class CheckTests
     [TestCase("8/k7/1p6/8/8/8/K4Q2/8 b - - 0 1", true)]
     [TestCase("8/k7/1p6/8/8/8/K41Q1/8 b - - 0 1", false)]
     [TestCase("8/8/1p6/8/8/8/K4Q2/8 b - - 0 1", true)]
+    [TestCase("8/8/1k6/8/8/8/K7/5Q2 b - - 0 1", true)]
     public void ResultsInCheckTests(string fen, bool expected)
     {
         var board = BoardFactory.Create(fen);
