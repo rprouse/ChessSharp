@@ -609,10 +609,11 @@ public class Board
 
         // Check for pawns
         int[] pawnAttacks = ActiveColour == PieceColour.White ? [-9, -7] : [9, 7];
+        PieceType pawnType = ActiveColour == PieceColour.White ? PieceType.BlackPawn : PieceType.WhitePawn;
         foreach (int attack in pawnAttacks)
         {
             int index = kingIndex + attack;
-            if (index >= 0 && index < 64 && _board[index].Colour == opponentColour && _board[index].Type == PieceType.Pawn)
+            if (index >= 0 && index < 64 && _board[index].Colour == opponentColour && _board[index].Type == pawnType)
             {
                 return true; // Pawn attack
             }
