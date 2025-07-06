@@ -490,7 +490,7 @@ public class Board
         return move;
     }
 
-    private bool ResultsInCheck(Move move)
+    internal bool ResultsInCheck(Move move)
     {
         // This is a stub for now. We will need to implement a method to check if the move results in check.
         // This will involve simulating the move and checking if the king is still safe.

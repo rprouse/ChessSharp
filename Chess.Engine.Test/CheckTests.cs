@@ -2,6 +2,53 @@ namespace Chess.Engine.Test;
 
 public class CheckTests
 {
+    [TestCase(-1)]
+    [TestCase(32)]
+    [TestCase(64)]
+    public void CantFindKingResultsInNotInCheck(int kingIndex)
+    {
+        var board = BoardFactory.Create("8/8/8/8/8/8/8/8 w - - 0 1");
+        var result = board.IsInCheck(kingIndex);
+        result.ShouldBeFalse();
+    }
+
+    [TestCase(PieceColour.Black)]
+    [TestCase(PieceColour.White)]
+    public void FindKingIndexShouldReturnMinusOneIfKingNotFound(PieceColour kingColour)
+    {
+        var board = BoardFactory.Create("8/8/8/8/8/8/8/8 w - - 0 1");
+        int kingIndex = board.FindKing(kingColour);
+        kingIndex.ShouldBe(-1);
+    }
+
+    [TestCase("8/k7/1p6/8/8/8/K4Q2/8 b - - 0 1", true)]
+    [TestCase("8/k7/1p6/8/8/8/K41Q1/8 b - - 0 1", false)]
+    [TestCase("8/8/1p6/8/8/8/K4Q2/8 b - - 0 1", true)]
+    public void ResultsInCheckTests(string fen, bool expected)
+    {
+        var board = BoardFactory.Create(fen);
+        Move move = new Move(41, 33, MoveFlags.QuietMove);
+        bool result = board.ResultsInCheck(move);
+        result.ShouldBe(expected);
+    }
+
+    [TestCase("8/k7/1p6/8/8/8/K4Q2/8 b - - 0 1")]
+    [TestCase("8/k7/1p6/8/8/8/K41Q1/8 b - - 0 1")]
+    public void ResultsInCheckResetsBoard(string fen)
+    {
+        var board = BoardFactory.Create(fen);
+        Move move = new Move(41, 33, MoveFlags.QuietMove);
+
+        Piece from = board[move.From];
+        Piece to = board[move.To];
+
+        bool _ = board.ResultsInCheck(move);
+
+        // Ensure the board is reset to its original state
+        board[move.From].ShouldBe(from);
+        board[move.To].ShouldBe(to);
+    }
+
     // Rook on same rank black
     [TestCase("8/Rk6/8/8/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
     [TestCase("8/1kR5/8/8/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
