@@ -608,7 +608,19 @@ public class Board
         }
 
         // Check for pawns
-        int[] pawnAttacks = opponentColour == PieceColour.White ? [-9, -7] : [9, 7];
+        int[] pawnAttacks;
+        if ( kingIndex % 8 == 0)
+        {
+            pawnAttacks = opponentColour == PieceColour.White ? [-7] : [9];
+        }
+        else if (kingIndex % 8 == 7)
+        {
+            pawnAttacks = opponentColour == PieceColour.White ? [-9] : [7];
+        }
+        else
+        {
+            pawnAttacks = opponentColour == PieceColour.White ? [-9, -7] : [9, 7];
+        }
         PieceType pawnType = opponentColour == PieceColour.White ? PieceType.WhitePawn : PieceType.BlackPawn;
         foreach (int attack in pawnAttacks)
         {

@@ -160,6 +160,15 @@ public class CheckTests
     [TestCase("k7/8/8/8/8/1p6/K7/8 b - - 0 1", PieceColour.White, true)]
     [TestCase("k7/8/8/8/8/6p1/7K/8 b - - 0 1", PieceColour.White, true)]
 
+    // Invalid checks where the attacking piece is wrapping around the board when the king is on the edge
+    [TestCase("8/P6k/8/8/8/8/6K1/8 w - - 0 1", PieceColour.Black, false)] // Pawn
+    [TestCase("8/k7/8/7P/8/8/6K1/8 w - - 0 1", PieceColour.Black, false)] // Pawn
+    [TestCase("8/k7/8/8/p7/8/7K/8 w - - 0 1", PieceColour.White, false)]  // Pawn
+    [TestCase("8/k7/8/8/8/8/K6p/8 w - - 0 1", PieceColour.White, false)]  // Pawn
+
+    [TestCase("7B/k7/8/8/8/8/K7/8 w - - 0 1", PieceColour.Black, false)] // Bishop
+    [TestCase("8/k7/7B/8/8/8/K7/8 w - - 0 1", PieceColour.Black, false)] // Bishop
+    [TestCase("8/k7/8/8/8/8/K7/2B5 w - - 0 1", PieceColour.Black, false)]  // Bishop
 
     public void CanDetermineCheck(string fen, PieceColour kingColour, bool expected)
     {
