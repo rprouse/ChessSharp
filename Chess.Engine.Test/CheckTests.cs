@@ -154,6 +154,13 @@ public class CheckTests
     [TestCase("8/8/8/8/8/8/2n2k2/K7 b - - 0 1", PieceColour.White, true)]
     [TestCase("8/8/2k5/8/8/8/5n2/7K b - - 0 1", PieceColour.White, true)]
 
+    // Pawn checks
+    [TestCase("k7/1P6/8/8/8/8/K7/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("7k/6P1/8/8/8/8/7K/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("k7/8/8/8/8/1p6/K7/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("k7/8/8/8/8/6p1/7K/8 b - - 0 1", PieceColour.White, true)]
+
+
     public void CanDetermineCheck(string fen, PieceColour kingColour, bool expected)
     {
         var board = BoardFactory.Create(fen);
