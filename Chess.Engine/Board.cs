@@ -513,7 +513,7 @@ public class Board
         return inCheck;
     }
 
-    private bool IsInCheck(int kingIndex)
+    internal bool IsInCheck(int kingIndex)
     {
         // Check if the king is in check by any opposing piece
         if (kingIndex < 0 || kingIndex >= 64 || _board[kingIndex].Type != PieceType.King)
@@ -622,7 +622,7 @@ public class Board
         return false; // King is safe
     }
 
-    private int FindKing(PieceColour colour)
+    internal int FindKing(PieceColour colour)
     {
         for (int i = 0; i < 64; i++)
         {
