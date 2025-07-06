@@ -218,6 +218,11 @@ public class CheckTests
     [TestCase("8/k7/7B/8/8/8/K7/8 w - - 0 1", PieceColour.Black, false)] // Bishop
     [TestCase("8/k7/8/8/8/8/K7/2B5 w - - 0 1", PieceColour.Black, false)]  // Bishop
 
+    [TestCase("8/8/7N/k7/8/8/K7/8 b - - 0 1", PieceColour.Black, false)]  // Knight
+    [TestCase("8/8/8/k7/8/8/K6N/8 b - - 0 1", PieceColour.Black, false)]  // Knight
+    [TestCase("N7/8/8/7k/8/8/K7/8 b - - 0 1", PieceColour.Black, false)]  // Knight
+    [TestCase("8/8/8/7k/N7/8/K7/8 b - - 0 1", PieceColour.Black, false)]  // Knight
+
     public void CanDetermineCheck(string fen, PieceColour kingColour, bool expected)
     {
         var board = BoardFactory.Create(fen);

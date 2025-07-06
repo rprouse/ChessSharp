@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -607,15 +608,24 @@ public class Board
         foreach (int move in knightMoves)
         {
             int index = kingIndex + move;
-            if (index >= 0 && index < 64 && _board[index].Colour == opponentColour && _board[index].Type == PieceType.Knight)
+            if (index >= 0 && index < 64)
             {
-                return true; // Knight attack
+                int fileDiff = Math.Abs(File(kingIndex) - File(index));
+                int rankDiff = Math.Abs(Rank(kingIndex) - Rank(index));
+                // Valid knight moves have file and rank differences of (1,2) or (2,1)
+                if ((fileDiff == 1 && rankDiff == 2) || (fileDiff == 2 && rankDiff == 1))
+                {
+                    if (_board[index].Colour == opponentColour && _board[index].Type == PieceType.Knight)
+                    {
+                        return true; // Knight attack
+                    }
+                }
             }
         }
 
         // Check for pawns
         int[] pawnAttacks;
-        if ( kingIndex % 8 == 0)
+        if (kingIndex % 8 == 0)
         {
             pawnAttacks = opponentColour == PieceColour.White ? [-7] : [9];
         }
