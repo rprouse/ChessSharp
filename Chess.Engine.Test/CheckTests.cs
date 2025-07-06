@@ -94,6 +94,27 @@ public class CheckTests
     [TestCase("1q6/1P6/1K6/8/8/8/6k1/8 b - - 0 1", PieceColour.White, false)]
     [TestCase("8/8/1K6/1P6/8/8/6k1/1q6 b - - 0 1", PieceColour.White, false)]
 
+    // Bishop on same diagonal
+    [TestCase("8/B7/1k6/8/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/1k6/8/8/8/6K1/6B1 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/1k6/B7/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("3B4/8/1k6/8/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/b7/1K6/8/8/8/6k1/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/1K6/8/8/8/6k1/6b1 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/1K6/b7/8/8/6k1/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("3b4/8/1K6/8/8/8/6k1/8 b - - 0 1", PieceColour.White, true)]
+
+    // Queen on same diagonal
+    [TestCase("8/Q7/1k6/8/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/1k6/8/8/8/6K1/6Q1 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/8/1k6/Q7/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("3Q4/8/1k6/8/8/8/6K1/8 b - - 0 1", PieceColour.Black, true)]
+    [TestCase("8/q7/1K6/8/8/8/6k1/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/1K6/8/8/8/6k1/6q1 b - - 0 1", PieceColour.White, true)]
+    [TestCase("8/8/1K6/q7/8/8/6k1/8 b - - 0 1", PieceColour.White, true)]
+    [TestCase("3q4/8/1K6/8/8/8/6k1/8 b - - 0 1", PieceColour.White, true)]
+
+
     public void CanDetermineCheck(string fen, PieceColour colour, bool expected)
     {
         var board = BoardFactory.Create(fen);
