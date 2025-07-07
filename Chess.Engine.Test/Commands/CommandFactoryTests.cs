@@ -32,7 +32,7 @@ public class CommandFactoryTests
     [TestCase("invalid")]
     [TestCase(" ")]
     [TestCase(null)]
-    public void TestCommandFactoryInvalid(string command)
+    public void TestCommandFactoryInvalid(string? command)
     {
         _console.ReadLine().Returns(command);
         _factory.GetParser().ShouldBeNull();
