@@ -10,6 +10,9 @@ public class SquareControl : Panel
 {
     Avalonia.Svg.Svg _svg;
 
+    //const string ChessSet = "Alpha";
+    const string ChessSet = "Merida";
+
     public static readonly StyledProperty<Piece> PieceProperty =
         AvaloniaProperty.Register<SquareControl, Piece>(nameof(Piece));
 
@@ -40,18 +43,18 @@ public class SquareControl : Panel
     {
         string pieceImage = newPiece.Character switch
         {
-            'P' => "Assets/Pieces/Book Diagram/wp.svg",
-            'p' => "Assets/Pieces/Book Diagram/bp.svg",
-            'N' => "Assets/Pieces/Book Diagram/wn.svg",
-            'n' => "Assets/Pieces/Book Diagram/bn.svg",
-            'B' => "Assets/Pieces/Book Diagram/wb.svg",
-            'b' => "Assets/Pieces/Book Diagram/bb.svg",
-            'R' => "Assets/Pieces/Book Diagram/wr.svg",
-            'r' => "Assets/Pieces/Book Diagram/br.svg",
-            'Q' => "Assets/Pieces/Book Diagram/wq.svg",
-            'q' => "Assets/Pieces/Book Diagram/bq.svg",
-            'K' => "Assets/Pieces/Book Diagram/wk.svg",
-            'k' => "Assets/Pieces/Book Diagram/bk.svg",
+            'P' => $"Assets/Pieces/{ChessSet}/wp.svg",
+            'p' => $"Assets/Pieces/{ChessSet}/bp.svg",
+            'N' => $"Assets/Pieces/{ChessSet}/wn.svg",
+            'n' => $"Assets/Pieces/{ChessSet}/bn.svg",
+            'B' => $"Assets/Pieces/{ChessSet}/wb.svg",
+            'b' => $"Assets/Pieces/{ChessSet}/bb.svg",
+            'R' => $"Assets/Pieces/{ChessSet}/wr.svg",
+            'r' => $"Assets/Pieces/{ChessSet}/br.svg",
+            'Q' => $"Assets/Pieces/{ChessSet}/wq.svg",
+            'q' => $"Assets/Pieces/{ChessSet}/bq.svg",
+            'K' => $"Assets/Pieces/{ChessSet}/wk.svg",
+            'k' => $"Assets/Pieces/{ChessSet}/bk.svg",
             _ => "Assets/Pieces/empty.svg"
         };
 
