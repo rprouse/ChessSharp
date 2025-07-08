@@ -1,21 +1,25 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace FenEditor.Controls;
 
-public class SquareControl : UserControl
+public class SquareControl : Panel
 {
     public SquareControl(int row, int col)
     {
         var isLight = (row + col) % 2 == 0;
+        Background = isLight ? Brushes.SteelBlue : Brushes.LightSteelBlue;
 
-        var border = new Border
+        var image = new Avalonia.Svg.Svg(new System.Uri(@"avares://FenEditor"))
         {
-            Background = isLight ? Brushes.SteelBlue : Brushes.LightSteelBlue,
-            BorderBrush = Brushes.Black,
-            BorderThickness = new Thickness(0.5)
+            Path = "Assets/Pieces/Book Diagram/wq.svg",
+            Stretch = Stretch.Uniform,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(12)
         };
-        Content = border;
+        Children.Add(image);
     }
 }
