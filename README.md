@@ -37,3 +37,9 @@ The board is represented as an array of 64 `Piece` structs which are effectively
    -------------------------
      a  b  c  d  e  f  g  h
 ```
+
+## Chess Sets
+
+The images for the chess pieces are from [lucaschessR2](https://github.com/lukasmonk/lucaschessR2)
+which is under the GPLv3 license. Some of the chess sets are under different licenses. See their 
+resprective folders.
