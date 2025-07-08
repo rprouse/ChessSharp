@@ -12,7 +12,7 @@ public class SquareControl : UserControl
 
         var border = new Border
         {
-            Background = isLight ? Brushes.Bisque : Brushes.Sienna,
+            Background = isLight ? Brushes.SteelBlue : Brushes.LightSteelBlue,
             BorderBrush = Brushes.Black,
             BorderThickness = new Thickness(0.5)
         };
