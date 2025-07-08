@@ -8,6 +8,8 @@ namespace FenEditor.Controls;
 
 public class BoardControl : Grid
 {
+    SquareControl[] _squares = new SquareControl[64];
+
     public BoardControl()
     {
         BuildGrid();
@@ -47,6 +49,7 @@ public class BoardControl : Grid
                 SetRow(square, row);
                 SetColumn(square, col);
                 Children.Add(square);
+                _squares[(8 - row) * 8 + (col - 1)] = square;
             }
         }
     }
