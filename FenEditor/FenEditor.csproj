@@ -19,4 +19,8 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
     <PackageReference Include="Svg.Controls.Avalonia" Version="11.3.0.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chess.Engine\Chess.Engine.csproj" />
+  </ItemGroup>
 </Project>

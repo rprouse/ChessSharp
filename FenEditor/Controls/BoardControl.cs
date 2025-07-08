@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Chess.Engine;
 
 namespace FenEditor.Controls;
 
@@ -10,10 +11,21 @@ public class BoardControl : Grid
 {
     SquareControl[] _squares = new SquareControl[64];
 
+    private static readonly StyledProperty<Board> BoardProperty =
+        AvaloniaProperty.Register<BoardControl, Board>(nameof(Board));
+
+    public Board Board
+    {
+        get => GetValue(BoardProperty);
+        set => SetValue(BoardProperty, value);
+    }
+
     public BoardControl()
     {
         BuildGrid();
+        this.GetObservable(BoardProperty).Subscribe(new AnonymousObserver<Board>(OnBoardChanged));
         SizeChanged += OnSizeChanged;
+        Board = BoardFactory.Create(BoardInitialization.Standard);
     }
 
     private void BuildGrid()
@@ -84,5 +96,14 @@ public class BoardControl : Grid
         double size = Math.Min(e.NewSize.Width, e.NewSize.Height);
         Width = size;
         Height = size;
+    }
+
+    private void OnBoardChanged(Board newBoard)
+    {
+        if (newBoard == null) return;
+        for (int i = 0; i < 64; i++)
+        {
+            _squares[i].Piece = newBoard[i];
+        }
     }
 }
